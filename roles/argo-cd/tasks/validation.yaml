@@ -7,7 +7,6 @@
     - cert-manager
     - external-dns
     - k3s
-    - victoria-metrics
     - argo-cd
   loop_control:
     loop_var: role
