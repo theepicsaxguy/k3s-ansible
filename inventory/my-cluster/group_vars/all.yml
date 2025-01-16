@@ -33,6 +33,16 @@ externaldns_vars:
       private_key_secret: "acme-private-key"  # Name for the private key secret
     prefix: "externaldns"  # Example prefix
 
+  kubernetes:
+    helm:
+      repository:
+        org: "your-helm-org"          # Replace with your Helm repository organization
+        name: "external-dns-repo"     # Replace with your Helm repository name
+        url: "https://charts.your-helm-repo.com"  # Replace with your Helm repository URL
+      chart:
+        name: "external-dns"          # Helm chart name for External DNS
+        version: "v5.4.0"             # Specify the required chart version
+
 # Define External DNS API Token in global_map
 global_map:
   credentials:
