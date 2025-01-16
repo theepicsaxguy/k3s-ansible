@@ -2,3 +2,7 @@
 *.log
 ansible.cfg
 kubeconfig
+.aid*
+docs/
+prompts/
+.aider*
