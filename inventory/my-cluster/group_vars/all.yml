@@ -51,11 +51,15 @@ k3s_map:
       bin: "/usr/local/bin"  # Adjust based on your environment
   agent:
     ha: true  # Set to 'true' if HA is configured
+  cluster:
+    dns: "{{ apiserver_endpoint }}"  # Newly added
 
 k3s_vars:
   server:
     api:
       port: 6443  # Default K3s API server port
+  cluster:
+    domain: "your_cluster_domain_here"  # Newly added
 
 k3s_token: "your_k3s_token_here"  # Replace with your actual K3s token
 
