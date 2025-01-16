@@ -114,7 +114,6 @@ k3s_token: "your_k3s_token_here" # Replace with your actual K3s token
 
 helm_map:
   release:
-    key: "https://baltocdn.com/helm/signing.asc"
     repository:
       org: "helm"
       name: "helm.sh"
