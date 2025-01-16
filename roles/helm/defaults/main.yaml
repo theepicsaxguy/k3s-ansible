@@ -1,0 +1,22 @@
+---
+helm_vars:
+  environment:
+    HELM_NAMESPACE: default
+  plugins:
+    - name: diff
+      enabled: true
+      packages:
+        - python3-jsonpatch
+      repository:
+        url: https://github.com/databus23/helm-diff
+      version: v3.9.13
+  release:
+    distro:
+      name: debian
+      url: https://helm.baltorepo.com
+    key: helm-archive-keyring.gpg
+    repository:
+      channel: stable
+      key: signing.asc
+      url: https://baltocdn.com/helm
+    version: v3.16.2-1
