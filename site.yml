@@ -50,6 +50,34 @@
     - role: k3s_server_post
       become: true
 
+- name: Install Argo CD
+  hosts: master
+  environment: "{{ proxy_env | default({}) }}"
+  roles:
+    - role: argo-cd
+      become: true
+
+- name: Install Cert-Manager
+  hosts: master
+  environment: "{{ proxy_env | default({}) }}"
+  roles:
+    - role: cert-manager
+      become: true
+
+- name: Configure CoreDNS
+  hosts: master
+  environment: "{{ proxy_env | default({}) }}"
+  roles:
+    - role: coredns
+      become: true
+
+- name: Configure External DNS
+  hosts: master
+  environment: "{{ proxy_env | default({}) }}"
+  roles:
+    - role: external-dns
+      become: true
+
 - name: Storing kubeconfig in the playbook directory
   hosts: master
   environment: "{{ proxy_env | default({}) }}"

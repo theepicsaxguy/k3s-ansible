@@ -15,6 +15,19 @@ metal_lb_ip_range: "10.25.150.30-10.25.150.150"
 
 kube_vip_lb_ip_range: "10.25.150.30-10.25.150.150"
 
+# Argo CD Configuration
+argo_cd_version: "v2.5.3"  # Specify the desired version
+
+# Cert-Manager Configuration
+cert_manager_version: "v1.8.0"  # Specify the desired version
+
+# CoreDNS Configuration
+coredns_replica_count: 2  # Example variable
+
+# External DNS Configuration
+external_dns_provider: "cloudflare"  # Example variable
+external_dns_api_token: "your-api-token"  # Replace with actual token
+
 # Only enable if your nodes are proxmox LXC nodes, make sure to configure your proxmox nodes
 # in your hosts.ini file.
 # Please read https://gist.github.com/triangletodd/02f595cd4c0dc9aac5f7763ca2264185 before using this.
