@@ -112,6 +112,21 @@ k3s_vars:
 
 k3s_token: "your_k3s_token_here" # Replace with your actual K3s token
 
+helm_map:
+  release:
+    key: "https://baltocdn.com/helm/signing.asc"
+    repository:
+      org: "helm"
+      name: "helm.sh"
+      url: "https://baltocdn.com/helm/stable/debian/"
+    chart:
+      name: "argo-cd"          # Helm chart name for Argo CD
+      version: "v7.7.16"        # Specify the required chart version
+    channel: "stable"
+    distro:
+      name: "ubuntu"            # Replace with your OS if different
+    version: "v3.8.0"           # Desired Helm version
+
 k3s_project:
   cluster:
     kubeconfig: "/etc/rancher/k3s/k3s.yaml" # Path to your kubeconfig

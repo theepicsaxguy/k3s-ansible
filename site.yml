@@ -50,6 +50,13 @@
     - role: k3s_server_post
       become: true
 
+- name: Install Helm
+  hosts: master
+  environment: "{{ proxy_env | default({}) }}"
+  roles:
+    - role: helm
+      become: true
+
 - name: Install Argo CD
   hosts: master
   environment: "{{ proxy_env | default({}) }}"
@@ -62,13 +69,6 @@
   environment: "{{ proxy_env | default({}) }}"
   roles:
     - role: cert-manager
-      become: true
-
-- name: Install Helm
-  hosts: master
-  environment: "{{ proxy_env | default({}) }}"
-  roles:
-    - role: helm
       become: true
 
 - name: Configure CoreDNS
