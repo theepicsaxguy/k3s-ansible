@@ -17,16 +17,80 @@ kube_vip_lb_ip_range: "10.25.150.30-10.25.150.150"
 
 # Argo CD Configuration
 argo_cd_version: "v2.5.3"  # Specify the desired version
+argo_cd_namespace: "argocd"  # Namespace where Argo CD will be installed
+argo_cd_admin_password: "your_secure_password"  # Admin password for Argo CD
+
+# External DNS Configuration
+externaldns_vars:
+  cloudflare:
+    host:
+      domain: "example.com"  # Replace with your actual domain
+certmanager_map:
+  ca:
+    cluster:
+      issuer:
+        name: "{{ cert_manager_issuer }}"  # Refers to cert_manager_issuer defined earlier
+
+# VictoriaMetrics Configuration
+victoriametrics_map:
+  service:
+    monitor:
+      scrape:
+        interval: "30s"  # Example value, adjust as needed
+        timeout: "10s"  # Example value, adjust as needed
+victoriametrics_vars:
+  kubernetes:
+    namespace: "victoriametrics"  # Namespace for VictoriaMetrics
+
+# K3s Configuration
+k3s_map:
+  server:
+    hosts: ["10.25.150.11", "10.25.150.12", "10.25.150.13"]
+  node:
+    directory:
+      bin: "/usr/local/bin"  # Adjust based on your environment
+  agent:
+    ha: true  # Set to 'true' if HA is configured
+
+k3s_vars:
+  server:
+    api:
+      port: 6443  # Default K3s API server port
+
+k3s_token: "your_k3s_token_here"  # Replace with your actual K3s token
+
+k3s_project:
+  cluster:
+    kubeconfig: "/etc/rancher/k3s/k3s.yaml"  # Path to your kubeconfig
+
+global_map:
+  credentials:
+    argocd:
+      server:
+        admin:
+          password: "{{ argo_cd_admin_password }}"
+        user:
+          name: "admin"  # Example username, adjust as needed
+          password: "user_password"  # Replace if different from admin
+
+# Argo CD Postinstall Flag
+argocd_postinstall: false  # Initial value; set to 'true' post-installation
 
 # Cert-Manager Configuration
 cert_manager_version: "v1.8.0"  # Specify the desired version
+cert_manager_namespace: "cert-manager"  # Namespace for Cert-Manager
+cert_manager_issuer: "letsencrypt-prod"  # ClusterIssuer name
 
 # CoreDNS Configuration
-coredns_replica_count: 2  # Example variable
+coredns_replica_count: 2  # Number of CoreDNS replicas
+coredns_upstream_dns: "1.1.1.1"  # Upstream DNS server
 
 # External DNS Configuration
 external_dns_provider: "cloudflare"  # Example variable
 external_dns_api_token: "your-api-token"  # Replace with actual token
+external_dns_domain: "example.com"  # Domain to manage DNS records for
+external_dns_record_type: "A"  # DNS record type (e.g., A, CNAME)
+external_dns_namespace: "external-dns"  # Namespace for External DNS
 
 # Only enable if your nodes are proxmox LXC nodes, make sure to configure your proxmox nodes
 # in your hosts.ini file.
