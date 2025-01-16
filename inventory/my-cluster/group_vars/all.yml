@@ -15,6 +15,11 @@ metal_lb_ip_range: "10.25.150.30-10.25.150.150"
 
 kube_vip_lb_ip_range: "10.25.150.30-10.25.150.150"
 
+k3s_node_ip:
+  10.25.150.11: "10.25.150.11"
+  10.25.150.12: "10.25.150.12"
+  10.25.150.13: "10.25.150.13"
+
 # Argo CD Configuration
 argo_cd_version: "v2.5.3" # Specify the desired version
 argo_cd_namespace: "argocd" # Namespace where Argo CD will be installed
@@ -22,6 +27,10 @@ argo_cd_admin_password: "your_secure_password" # Admin password for Argo CD
 
 # External DNS Configuration
 externaldns_vars:
+  acme:
+    email: "your-email@example.com"  # Replace with your actual email
+    server: "https://acme-v02.api.letsencrypt.org/directory"
+    private_key_secret: "acme-private-key"  # Name for the private key secret
   cloudflare:
     host:
       domain: "example.com" # Replace with your actual domain
