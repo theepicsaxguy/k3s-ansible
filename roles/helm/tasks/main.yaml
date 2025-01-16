@@ -73,16 +73,11 @@
           changed_when: false
           register: architecture
 
-        - name: Install repository
-          ansible.builtin.deb822_repository:
-            architectures: '{{ architecture.stdout }}'
-            components: main
-            name: helm-{{ helm_vars.release.repository.channel }}
-            signed_by: /usr/share/keyrings/{{ helm_vars.release.key }}
-            suites: all
-            uris: '{{  helm_map.release.channel }}/{{ helm_vars.release.distro.name }}/'
-            enabled: true
-            trusted: true
+        - name: Install Helm repository
+          ansible.builtin.apt_repository:
+            repo: 'deb [arch={{ architecture.stdout }} signed-by=/usr/share/keyrings/{{ helm_vars.release.key }}] {{ helm_map.release.channel }}/{{ helm_vars.release.distro.name }}/ all main'
+            state: present
+            update_cache: yes
 
         - name: Install helm package
           ansible.builtin.apt:
