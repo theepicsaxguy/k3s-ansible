@@ -64,6 +64,13 @@
     - role: cert-manager
       become: true
 
+- name: Install Helm
+  hosts: master
+  environment: "{{ proxy_env | default({}) }}"
+  roles:
+    - role: helm
+      become: true
+
 - name: Configure CoreDNS
   hosts: master
   environment: "{{ proxy_env | default({}) }}"
@@ -77,6 +84,7 @@
   roles:
     - role: external-dns
       become: true
+
 
 - name: Storing kubeconfig in the playbook directory
   hosts: master
