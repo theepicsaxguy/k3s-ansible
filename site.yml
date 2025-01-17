@@ -60,7 +60,7 @@
   hosts: master[0]
   environment: "{{ proxy_env | default({}) }}"
   roles:
-    - role: argo_cd
+    - role: argo-cd
       become: true
 
 - name: Install cert_manager

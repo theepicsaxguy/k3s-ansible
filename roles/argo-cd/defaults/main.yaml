@@ -17,7 +17,7 @@ argocd_vars:
         exec:
           enabled: true
         status_badge:
-          # -- See [documentation](https://argo_cd.readthedocs.io/en/stable/user-guide/status-badge/), for details
+          # -- See [documentation](https://argo-cd.readthedocs.io/en/stable/user-guide/status-badge/), for details
           enabled: false
       params:
         application:
@@ -27,7 +27,7 @@ argocd_vars:
         applicationsetcontroller:
           git:
             new_file_globbing:
-              # -- See [documentation](https://argo_cd.readthedocs.io/en/stable/operator-manual/applicationset/Generators-Git-File-Globbing/), for details
+              # -- See [documentation](https://argo-cd.readthedocs.io/en/stable/operator-manual/applicationset/Generators-Git-File-Globbing/), for details
               enabled: true
             submodule:
               # -- Enable git submodule support
@@ -42,7 +42,7 @@ argocd_vars:
           log_level: warn
           sharding:
             # -- Available options are `legacy`, `round-robin` and `consistent-hashing`,
-            # see [documentation](https://argo_cd.readthedocs.io/en/stable/operator-manual/high_availability/) for details
+            # see [documentation](https://argo-cd.readthedocs.io/en/stable/operator-manual/high_availability/) for details
             algorithm: consistent-hashing
         dexserver:
           # -- Available options are `debug`, `info', `warn` and `error`
@@ -60,7 +60,7 @@ argocd_vars:
           log_level: warn
     controller:
       dynamic_cluster_distribution:
-        # -- See [documentation](https://argo_cd.readthedocs.io/en/stable/operator-manual/dynamic-cluster-distribution), for details
+        # -- See [documentation](https://argo-cd.readthedocs.io/en/stable/operator-manual/dynamic-cluster-distribution), for details
         enabled: true
       replicas: 1
       resources:
@@ -88,7 +88,7 @@ argocd_vars:
           memory: 128Mi
     helm:
       chart:
-        name: argo_cd
+        name: argo-cd
         version: v7.7.16
       repository:
         name: argo-helm
@@ -164,7 +164,7 @@ argocd_vars:
           # @default -- Set value into [all.yaml](../../inventory/cluster/group_vars/all.yaml) `credentials` collection
           password:
       gateway:
-        service: argo_cd-argocd-server
+        service: argo-cd-argocd-server
       resources:
         limits:
           cpu:
@@ -177,6 +177,6 @@ argocd_vars:
     checksum: cli_checksums.txt
     file: argocd-linux-arm64
     repository:
-      name: argo_cd
+      name: argo-cd
       org: argoproj
     version: v2.13.3

@@ -18,20 +18,20 @@ kube_vip_lb_ip_range: "10.25.150.30-10.25.150.150"
 k3s_node_ip: "10.25.150.11,10.25.150.12,10.25.150.13"
 
 # Argo CD Configuration
-argo_cd_version: "v2.5.3" # Specify the desired version
-argo_cd_namespace: "argocd" # Namespace where Argo CD will be installed
-argo_cd_admin_password: "your_secure_password" # Admin password for Argo CD
+argo-cd_version: "v2.5.3" # Specify the desired version
+argo-cd_namespace: "argocd" # Namespace where Argo CD will be installed
+argo-cd_admin_password: "your_secure_password" # Admin password for Argo CD
 
 # Argo CD Domain Configuration
-argo_cd_domain: "argocd.example.com" # Replace with your desired domain
+argo-cd_domain: "argocd.pc-tips.se" # Replace with your desired domain
 
-argo_cd_map:
+argo-cd_map:
   gateway:
     server:
-      hostname: "{{ argo_cd_domain }}"
+      hostname: "{{ argo-cd_domain }}"
 
 # Rancher Domain Configuration
-rancher_domain: "rancher.example.com" # Replace with your desired domain
+rancher_domain: "rancher.pc-tips.se" # Replace with your desired domain
 
 rancher_map:
   gateway:
@@ -42,7 +42,7 @@ rancher_map:
 externaldns_vars:
   cloudflare:
     host:
-      domain: "example.com" # Replace with your actual domain
+      domain: "pc-tips.se" # Replace with your actual domain
     acme:
       email: "your-email@example.com" # Replace with your actual email
       server: "https://acme-v02.api.letsencrypt.org/directory"
@@ -67,7 +67,7 @@ global_map:
     argocd:
       server:
         admin:
-          password: "{{ argo_cd_admin_password }}"
+          password: "{{ argo-cd_admin_password }}"
         user:
           name: "admin"
           password: "user_password"
@@ -126,7 +126,7 @@ k3s_vars:
     api:
       port: 6443 # Default K3s API server port
   cluster:
-    domain: "your_cluster_domain_here" # Newly added
+    domain: "pc-tips.se" # Newly added
 
 k3s_token: "your_k3s_token_here" # Replace with your actual K3s token
 
@@ -137,11 +137,11 @@ helm_map:
       name: "helm.sh"
       url: "https://baltocdn.com/helm/stable/debian/"
     chart:
-      name: "argo_cd" # Helm chart name for Argo CD
+      name: "argo-cd" # Helm chart name for Argo CD
       version: "v7.7.16" # Specify the required chart version
     channel: "stable"
     distro:
-      name: "ubuntu" # Replace with your OS if different
+      name: "debian" # Replace with your OS if different
     version: "v3.8.0" # Desired Helm version
 
 k3s_project:

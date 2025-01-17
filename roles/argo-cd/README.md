@@ -1,8 +1,8 @@
-# argo_cd
+# argo-cd
 
 ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![Version: 7.7.16](https://img.shields.io/badge/Version-7.7.16-informational?style=flat-square)
 
-The role performs various tasks related to `argo_cd` [chart](https://github.com/argoproj/argo-helm/tree/argo_cd-7.7.16/charts/argo_cd) deployment, reset and validation. Review the [documentation](https://axivo.com/k3s-cluster/wiki/guide/configuration/roles/argocd), for additional details.
+The role performs various tasks related to `argo-cd` [chart](https://github.com/argoproj/argo-helm/tree/argo-cd-7.7.16/charts/argo-cd) deployment, reset and validation. Review the [documentation](https://axivo.com/k3s-cluster/wiki/guide/configuration/roles/argocd), for additional details.
 
 ## Role Dependencies
 
@@ -10,7 +10,7 @@ See the installed role dependencies listed below, defined into [main.yaml](./def
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://github.com/argoproj/argo_cd | argocd | 2.13.3 |
+| https://github.com/argoproj/argo-cd | argocd | 2.13.3 |
 
 ## Role Variables
 
@@ -29,20 +29,20 @@ See the related role variables listed below, defined into [main.yaml](./defaults
 | argocd_vars.kubernetes.application_set.resources.requests.memory | string | `"128Mi"` |  |
 | argocd_vars.kubernetes.configs.cm.admin.enabled | bool | `false` |  |
 | argocd_vars.kubernetes.configs.cm.exec.enabled | bool | `true` |  |
-| argocd_vars.kubernetes.configs.cm.status_badge.enabled | bool | `false` | See [documentation](https://argo_cd.readthedocs.io/en/stable/user-guide/status-badge/), for details |
+| argocd_vars.kubernetes.configs.cm.status_badge.enabled | bool | `false` | See [documentation](https://argo-cd.readthedocs.io/en/stable/user-guide/status-badge/), for details |
 | argocd_vars.kubernetes.configs.params.application.namespaces | list | `["kube-system"]` | Namespaces where applications may be created |
-| argocd_vars.kubernetes.configs.params.applicationsetcontroller.git.new_file_globbing.enabled | bool | `true` | See [documentation](https://argo_cd.readthedocs.io/en/stable/operator-manual/applicationset/Generators-Git-File-Globbing/), for details |
+| argocd_vars.kubernetes.configs.params.applicationsetcontroller.git.new_file_globbing.enabled | bool | `true` | See [documentation](https://argo-cd.readthedocs.io/en/stable/operator-manual/applicationset/Generators-Git-File-Globbing/), for details |
 | argocd_vars.kubernetes.configs.params.applicationsetcontroller.git.submodule.enabled | bool | `true` | Enable git submodule support |
 | argocd_vars.kubernetes.configs.params.applicationsetcontroller.log_level | string | `"warn"` | Available options are `debug`, `info', `warn` and `error` |
 | argocd_vars.kubernetes.configs.params.applicationsetcontroller.progressive_syncs.enabled | bool | `true` | Enable use of Progressive Syncs |
 | argocd_vars.kubernetes.configs.params.controller.log_level | string | `"warn"` | Available options are `debug`, `info', `warn` and `error` |
-| argocd_vars.kubernetes.configs.params.controller.sharding.algorithm | string | `"consistent-hashing"` | Available options are `legacy`, `round-robin` and `consistent-hashing`, see [documentation](https://argo_cd.readthedocs.io/en/stable/operator-manual/high_availability/) for details |
+| argocd_vars.kubernetes.configs.params.controller.sharding.algorithm | string | `"consistent-hashing"` | Available options are `legacy`, `round-robin` and `consistent-hashing`, see [documentation](https://argo-cd.readthedocs.io/en/stable/operator-manual/high_availability/) for details |
 | argocd_vars.kubernetes.configs.params.dexserver.log_level | string | `"warn"` | Available options are `debug`, `info', `warn` and `error` |
 | argocd_vars.kubernetes.configs.params.notificationscontroller.log_level | string | `"warn"` | Available options are `debug`, `info', `warn` and `error` |
 | argocd_vars.kubernetes.configs.params.reposerver.log_level | string | `"warn"` | Available options are `debug`, `info', `warn` and `error` |
 | argocd_vars.kubernetes.configs.params.server.insecure | bool | `true` | If `true`, HTTPRoute is used, otherwise Ingress |
 | argocd_vars.kubernetes.configs.params.server.log_level | string | `"warn"` | Available options are `debug`, `info', `warn` and `error` |
-| argocd_vars.kubernetes.controller.dynamic_cluster_distribution.enabled | bool | `true` | See [documentation](https://argo_cd.readthedocs.io/en/stable/operator-manual/dynamic-cluster-distribution), for details |
+| argocd_vars.kubernetes.controller.dynamic_cluster_distribution.enabled | bool | `true` | See [documentation](https://argo-cd.readthedocs.io/en/stable/operator-manual/dynamic-cluster-distribution), for details |
 | argocd_vars.kubernetes.controller.replicas | int | `1` |  |
 | argocd_vars.kubernetes.controller.resources.limits.cpu | string | `nil` |  |
 | argocd_vars.kubernetes.controller.resources.limits.memory | string | `"512Mi"` |  |
@@ -57,7 +57,7 @@ See the related role variables listed below, defined into [main.yaml](./defaults
 | argocd_vars.kubernetes.haproxy.resources.limits.memory | string | `"128Mi"` |  |
 | argocd_vars.kubernetes.haproxy.resources.requests.cpu | string | `"10m"` |  |
 | argocd_vars.kubernetes.haproxy.resources.requests.memory | string | `"128Mi"` |  |
-| argocd_vars.kubernetes.helm.chart.name | string | `"argo_cd"` |  |
+| argocd_vars.kubernetes.helm.chart.name | string | `"argo-cd"` |  |
 | argocd_vars.kubernetes.helm.chart.version | string | `"v7.7.16"` |  |
 | argocd_vars.kubernetes.helm.repository.name | string | `"argo-helm"` |  |
 | argocd_vars.kubernetes.helm.repository.org | string | `"argoproj"` |  |
@@ -93,7 +93,7 @@ See the related role variables listed below, defined into [main.yaml](./defaults
 | argocd_vars.kubernetes.server.credentials.admin.password | string | Set value into [all.yaml](../../inventory/cluster/group_vars/all.yaml) `credentials` collection | ArgoCD UI admin password, set at global level |
 | argocd_vars.kubernetes.server.credentials.user.name | string | Set value into [all.yaml](../../inventory/cluster/group_vars/all.yaml) `credentials` collection | ArgoCD UI user name, set at global level |
 | argocd_vars.kubernetes.server.credentials.user.password | string | Set value into [all.yaml](../../inventory/cluster/group_vars/all.yaml) `credentials` collection | ArgoCD UI user password, set at global level |
-| argocd_vars.kubernetes.server.gateway.service | string | `"argo_cd-argocd-server"` |  |
+| argocd_vars.kubernetes.server.gateway.service | string | `"argo-cd-argocd-server"` |  |
 | argocd_vars.kubernetes.server.resources.limits.cpu | string | `nil` |  |
 | argocd_vars.kubernetes.server.resources.limits.memory | string | `"128Mi"` |  |
 | argocd_vars.kubernetes.server.resources.requests.cpu | string | `"10m"` |  |
@@ -101,6 +101,6 @@ See the related role variables listed below, defined into [main.yaml](./defaults
 | argocd_vars.kubernetes.server.subdomain | string | `"argocd"` |  |
 | argocd_vars.release.checksum | string | `"cli_checksums.txt"` |  |
 | argocd_vars.release.file | string | `"argocd-linux-arm64"` |  |
-| argocd_vars.release.repository.name | string | `"argo_cd"` |  |
+| argocd_vars.release.repository.name | string | `"argo-cd"` |  |
 | argocd_vars.release.repository.org | string | `"argoproj"` |  |
 | argocd_vars.release.version | string | `"v2.13.3"` |  |
