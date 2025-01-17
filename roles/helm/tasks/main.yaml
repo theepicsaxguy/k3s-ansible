@@ -19,7 +19,8 @@
       loop:
         - apt-transport-https
         - python3-kubernetes
-        - gnupg  # Added gnupg to the list
+        - gnupg
+        - git
 
     - name: Add variables to environment file
       ansible.builtin.lineinfile:
