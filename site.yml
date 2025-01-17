@@ -68,11 +68,11 @@
     - role: argo-cd
       become: true
 
-- name: Install cert_manager
+- name: Install cert-manager
   hosts: master
   environment: "{{ proxy_env | default({}) }}"
   roles:
-    - role: cert_manager
+    - role: cert-manager
       become: true
 
 - name: Configure CoreDNS
@@ -86,7 +86,7 @@
   hosts: master
   environment: "{{ proxy_env | default({}) }}"
   roles:
-    - role: external_dns
+    - role: external-dns
       become: true
 
 - name: Storing kubeconfig in the playbook directory

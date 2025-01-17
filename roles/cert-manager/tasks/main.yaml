@@ -9,14 +9,14 @@
   block:
     - name: Validate service state
       ansible.builtin.wait_for:
-        port: "{{ k3s_vars.server.api.port }}"
+        port: '{{ k3s_vars.server.api.port }}'
         state: drained
         timeout: 30
       any_errors_fatal: true
 
     - name: Set checksums fact
       ansible.builtin.uri:
-        url: "{{ certmanager_project.release.checksum }}"
+        url: '{{ certmanager_project.release.checksum }}'
         return_content: true
       register: checksums
       check_mode: false
@@ -31,12 +31,12 @@
 
     - name: Install binary
       ansible.builtin.get_url:
-        url: "{{ certmanager_project.release.file }}"
+        url: '{{ certmanager_project.release.file }}'
         checksum: sha256:{{ sha256_checksum }}
-        dest: "{{ k3s_map.node.directory.bin }}/cmctl"
+        dest: '{{ k3s_map.node.directory.bin }}/cmctl'
         owner: root
         group: root
-        mode: "755"
+        mode: '755'
       register: result
       delay: 1
       retries: 3
@@ -44,14 +44,14 @@
 
     - name: Create symlink
       ansible.builtin.file:
-        path: "{{ k3s_map.node.directory.bin }}/kubectl-cert_manager"
-        src: "{{ k3s_map.node.directory.bin }}/cmctl"
+        path: '{{ k3s_map.node.directory.bin }}/kubectl-cert_manager'
+        src: '{{ k3s_map.node.directory.bin }}/cmctl'
         state: link
 
     - name: Add repository
       kubernetes.core.helm_repository:
-        name: "{{ certmanager_vars.kubernetes.helm.repository.org }}"
-        repo_url: "{{ certmanager_vars.kubernetes.helm.repository.url }}"
+        name: '{{ certmanager_vars.kubernetes.helm.repository.org }}'
+        repo_url: '{{ certmanager_vars.kubernetes.helm.repository.url }}'
 
     - name: Chart Setup
       run_once: true
@@ -62,12 +62,12 @@
 
         - name: Install chart
           kubernetes.core.helm:
-            chart_ref: "{{ certmanager_map.helm.chart.reference }}"
-            chart_version: "{{ certmanager_vars.kubernetes.helm.chart.version }}"
-            kubeconfig: "{{ k3s_project.cluster.kubeconfig }}"
-            name: "{{ certmanager_vars.kubernetes.helm.chart.name }}"
-            namespace: "{{ certmanager_vars.kubernetes.namespace }}"
-            timeout: "{{ certmanager_map.helm.timeout }}"
+            chart_ref: '{{ certmanager_map.helm.chart.reference }}'
+            chart_version: '{{ certmanager_vars.kubernetes.helm.chart.version }}'
+            kubeconfig: '{{ k3s_project.cluster.kubeconfig }}'
+            name: '{{ certmanager_vars.kubernetes.helm.chart.name }}'
+            namespace: '{{ certmanager_vars.kubernetes.namespace }}'
+            timeout: '{{ certmanager_map.helm.timeout }}'
             values: "{{ lookup('ansible.builtin.template', 'values.j2') | from_yaml }}"
             create_namespace: true
             update_repo_cache: true
@@ -80,5 +80,5 @@
         - name: Create self-signed cluster issuer
           kubernetes.core.k8s:
             definition: "{{ lookup('ansible.builtin.template', 'cluster_issuer.j2') | from_yaml }}"
-            kubeconfig: "{{ k3s_project.cluster.kubeconfig }}"
+            kubeconfig: '{{ k3s_project.cluster.kubeconfig }}'
             wait: true

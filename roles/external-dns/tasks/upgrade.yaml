@@ -1,7 +1,7 @@
 ---
 - name: Role Upgrade
   ansible.builtin.include_tasks:
-    file: "{{ file }}.yaml"
+    file: '{{ file }}.yaml'
   loop:
     - main
     - postinstall

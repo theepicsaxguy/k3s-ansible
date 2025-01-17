@@ -5,7 +5,7 @@ argocd_vars:
       replicas: 1
       resources:
         limits:
-          cpu:
+          cpu: null
           memory: 128Mi
         requests:
           cpu: 10m
@@ -65,7 +65,7 @@ argocd_vars:
       replicas: 1
       resources:
         limits:
-          cpu:
+          cpu: null
           memory: 512Mi
         requests:
           cpu: 10m
@@ -73,7 +73,7 @@ argocd_vars:
     dex:
       resources:
         limits:
-          cpu:
+          cpu: null
           memory: 128Mi
         requests:
           cpu: 10m
@@ -81,7 +81,7 @@ argocd_vars:
     haproxy:
       resources:
         limits:
-          cpu:
+          cpu: null
           memory: 128Mi
         requests:
           cpu: 10m
@@ -102,7 +102,7 @@ argocd_vars:
     notifications:
       resources:
         limits:
-          cpu:
+          cpu: null
           memory: 128Mi
         requests:
           cpu: 10m
@@ -119,7 +119,7 @@ argocd_vars:
           size: 10Gi
       resources:
         limits:
-          cpu:
+          cpu: null
           memory: 128Mi
         requests:
           cpu: 10m
@@ -132,11 +132,11 @@ argocd_vars:
         max_replicas: 3
         target:
           utilization_percentage:
-            cpu:
+            cpu: null
             memory: 80
       resources:
         limits:
-          cpu:
+          cpu: null
           memory: 128Mi
         requests:
           cpu: 10m
@@ -149,7 +149,7 @@ argocd_vars:
         max_replicas: 3
         target:
           utilization_percentage:
-            cpu:
+            cpu: null
             memory: 80
       credentials:
         admin:
@@ -167,11 +167,12 @@ argocd_vars:
         service: argo-cd-argocd-server
       resources:
         limits:
-          cpu:
+          cpu: null
           memory: 128Mi
         requests:
           cpu: 10m
           memory: 128Mi
+      # -- See [documentation](https://axivo.com/k3s-cluster/tutorials/handbook/externaldns/#front-ends), for details
       subdomain: argocd
   release:
     checksum: cli_checksums.txt

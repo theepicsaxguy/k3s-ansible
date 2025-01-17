@@ -9,11 +9,11 @@
   block:
     - name: Remove repository
       kubernetes.core.helm_repository:
-        name: "{{ argocd_vars.kubernetes.helm.repository.org }}"
+        name: '{{ argocd_vars.kubernetes.helm.repository.org }}'
         repo_state: absent
       when: "'helm' in ansible_facts.packages"
 
     - name: Remove binary file
       ansible.builtin.file:
-        path: "{{ k3s_map.node.directory.bin }}/argocd"
+        path: '{{ k3s_map.node.directory.bin }}/argocd'
         state: absent

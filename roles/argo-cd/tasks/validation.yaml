@@ -1,23 +1,13 @@
 ---
-- name: Set role-specific variables
-  ansible.builtin.set_fact:
-    apiserver_endpoint: "{{ apiserver_endpoint }}"
-  with_items:
-    - cert_manager
-    - external_dns
-    - k3s
-    - argo-cd
-  loop_control:
-    loop_var: role
-
 - name: Role Facts
   ansible.builtin.include_role:
-    name: "{{ role }}"
+    name: '{{ role }}'
     tasks_from: facts
   loop:
-    - cert_manager
-    - external_dns
+    - cert-manager
+    - external-dns
     - k3s
+    #- victoria-metrics
     - argo-cd
   loop_control:
     loop_var: role
@@ -28,7 +18,7 @@
   block:
     - name: Validate project url
       ansible.builtin.uri:
-        url: "{{ argocd_project.url }}/{{ argocd_project.tag }}"
+        url: '{{ argocd_project.url }}/{{ argocd_project.tag }}'
         timeout: 5
       register: result
       delay: 1
@@ -37,7 +27,7 @@
 
     - name: Validate release checksum url
       ansible.builtin.uri:
-        url: "{{ argocd_project.release.checksum }}"
+        url: '{{ argocd_project.release.checksum }}'
         timeout: 5
       register: result
       delay: 1
@@ -46,7 +36,7 @@
 
     - name: Validate release file url
       ansible.builtin.uri:
-        url: "{{ argocd_project.release.file }}"
+        url: '{{ argocd_project.release.file }}'
         timeout: 5
       register: result
       delay: 1

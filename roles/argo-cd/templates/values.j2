@@ -275,7 +275,7 @@ server:
   certificate:
     enabled: true
     issuer:
-      group: cert_manager.io
+      group: cert-manager.io
       kind: ClusterIssuer
       name: {{ certmanager_map.ca.cluster.issuer.name }}
     privateKey:

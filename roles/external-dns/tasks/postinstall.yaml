@@ -11,12 +11,12 @@
 
     - name: Update chart postinstall values
       kubernetes.core.helm:
-        chart_ref: "{{ externaldns_map.helm.chart.reference }}"
-        chart_version: "{{ externaldns_vars.kubernetes.helm.chart.version }}"
-        kubeconfig: "{{ k3s_project.cluster.kubeconfig }}"
-        name: "{{ externaldns_vars.kubernetes.helm.chart.name }}"
-        namespace: "{{ externaldns_vars.kubernetes.namespace }}"
-        timeout: "{{ externaldns_map.helm.timeout }}"
+        chart_ref: '{{ externaldns_map.helm.chart.reference }}'
+        chart_version: '{{ externaldns_vars.kubernetes.helm.chart.version }}'
+        kubeconfig: '{{ k3s_project.cluster.kubeconfig }}'
+        name: '{{ externaldns_vars.kubernetes.helm.chart.name }}'
+        namespace: '{{ externaldns_vars.kubernetes.namespace }}'
+        timeout: '{{ externaldns_map.helm.timeout }}'
         values: "{{ lookup('ansible.builtin.template', 'values.j2') | from_yaml }}"
         reset_values: false
         reuse_values: true

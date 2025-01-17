@@ -6,7 +6,7 @@
   loop:
     - external_dns
     - k3s
-    - victoria-metrics
+    #- victoria-metrics
     - coredns
   loop_control:
     loop_var: role

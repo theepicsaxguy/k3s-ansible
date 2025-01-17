@@ -4,7 +4,7 @@ certmanager_vars:
     cainjector:
       resources:
         limits:
-          cpu:
+          cpu: null
           memory: 128Mi
         requests:
           cpu: 10m
@@ -13,17 +13,17 @@ certmanager_vars:
       replicas: 2
       resources:
         limits:
-          cpu:
+          cpu: null
           memory: 128Mi
         requests:
           cpu: 10m
           memory: 128Mi
     helm:
       chart:
-        name: cert_manager
-        version: v1.16.2
+        name: cert-manager
+        version: v1.16.3
       repository:
-        name: cert_manager
+        name: cert-manager
         org: jetstack
         url: https://charts.jetstack.io
     global:
@@ -33,7 +33,7 @@ certmanager_vars:
       replicas: 1
       resources:
         limits:
-          cpu:
+          cpu: null
           memory: 128Mi
         requests:
           cpu: 10m
@@ -43,5 +43,5 @@ certmanager_vars:
     file: cmctl_linux_arm64
     repository:
       name: cmctl
-      org: cert_manager
+      org: cert-manager
     version: v2.1.1

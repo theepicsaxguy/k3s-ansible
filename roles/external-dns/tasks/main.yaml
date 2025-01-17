@@ -11,15 +11,15 @@
   block:
     - name: Validate service state
       ansible.builtin.wait_for:
-        port: "{{ k3s_vars.server.api.port }}"
+        port: '{{ k3s_vars.server.api.port }}'
         state: drained
         timeout: 30
       any_errors_fatal: true
 
     - name: Add repository
       kubernetes.core.helm_repository:
-        name: "{{ externaldns_vars.kubernetes.helm.repository.org }}"
-        repo_url: "{{ externaldns_map.helm.repository.url }}"
+        name: '{{ externaldns_vars.kubernetes.helm.repository.org }}'
+        repo_url: '{{ externaldns_map.helm.repository.url }}'
 
     - name: Chart Setup
       run_once: true
@@ -27,7 +27,7 @@
         - name: Create cloudflare api token secret
           kubernetes.core.k8s:
             definition: "{{ lookup('ansible.builtin.template', 'api_token.j2') | from_yaml }}"
-            kubeconfig: "{{ k3s_project.cluster.kubeconfig }}"
+            kubeconfig: '{{ k3s_project.cluster.kubeconfig }}'
             wait: true
 
         - name: Set chart postinstall fact
@@ -36,12 +36,12 @@
 
         - name: Install chart
           kubernetes.core.helm:
-            chart_ref: "{{ externaldns_map.helm.chart.reference }}"
-            chart_version: "{{ externaldns_vars.kubernetes.helm.chart.version }}"
-            kubeconfig: "{{ k3s_project.cluster.kubeconfig }}"
-            name: "{{ externaldns_vars.kubernetes.helm.chart.name }}"
-            namespace: "{{ externaldns_vars.kubernetes.namespace }}"
-            timeout: "{{ externaldns_map.helm.timeout }}"
+            chart_ref: '{{ externaldns_map.helm.chart.reference }}'
+            chart_version: '{{ externaldns_vars.kubernetes.helm.chart.version }}'
+            kubeconfig: '{{ k3s_project.cluster.kubeconfig }}'
+            name: '{{ externaldns_vars.kubernetes.helm.chart.name }}'
+            namespace: '{{ externaldns_vars.kubernetes.namespace }}'
+            timeout: '{{ externaldns_map.helm.timeout }}'
             values: "{{ lookup('ansible.builtin.template', 'values.j2') | from_yaml }}"
             create_namespace: true
             update_repo_cache: true
@@ -54,5 +54,5 @@
         - name: Create cluster issuer
           kubernetes.core.k8s:
             definition: "{{ lookup('ansible.builtin.template', 'cluster_issuer.j2') | from_yaml }}"
-            kubeconfig: "{{ k3s_project.cluster.kubeconfig }}"
+            kubeconfig: '{{ k3s_project.cluster.kubeconfig }}'
             wait: true

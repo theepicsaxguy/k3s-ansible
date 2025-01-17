@@ -1,22 +1,7 @@
 ---
-- name: Verify Argo CD Deployment
-  hosts: master[0]
-  tasks:
-    - name: Wait for Argo CD pods to be running
-      kubernetes.core.k8s_info:
-        kind: Pod
-        namespace: "{{ argocd_namespace }}"
-        label_selectors:
-          - app.kubernetes.io/name=argocd-server
-      register: argocd_pods
-
-    - name: Assert Argo CD pods are running
-      ansible.builtin.assert:
-        that:
-          - argocd_pods.resources | selectattr('status.phase', 'eq', 'Running') | list | length >= 1
-        msg: "Argo CD pods are not running as expected."
+- name: Role Upgrade
   ansible.builtin.include_tasks:
-    file: "{{ file }}.yaml"
+    file: '{{ file }}.yaml'
   loop:
     - main
     - postinstall
