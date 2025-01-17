@@ -48,7 +48,7 @@
           apiVersion: v1
           kind: Namespace
           metadata:
-            name: "{{ argo-cd_namespace }}"
+            name: "{{ argocd_namespace }}"
       when: inventory_hostname in k3s_map.server.hosts
 
     - name: Validate service state
@@ -57,8 +57,6 @@
         state: started
         timeout: 30
       any_errors_fatal: true
-
-    # Additional setup tasks can be added here if necessary
 
   rescue:
     - name: Handle errors in setup
@@ -83,6 +81,14 @@
 
 # ## 5. Add Helm Repository
 
+- name: Verify Helm repositories
+  ansible.builtin.command: helm repo list
+  register: helm_repo_list
+
+- name: Print Helm repository list
+  ansible.builtin.debug:
+    var: helm_repo_list.stdout
+
 - name: Add repository
   kubernetes.core.helm_repository:
     name: "{{ argocd_vars.kubernetes.helm.repository.name }}"
@@ -97,13 +103,22 @@
       ansible.builtin.set_fact:
         argocd_postinstall: false
 
+    - name: Print Helm chart details
+      ansible.builtin.debug:
+        msg: >
+          Installing Helm chart with the following details:
+          Chart Reference: {{ argocd_map.helm.chart.reference }}
+          Chart Version: {{ argocd_vars.kubernetes.helm.chart.version }}
+          Namespace: {{ argocd_namespace }}
+          Repository URL: {{ argocd_map.helm.repository.url }}
+        
     - name: Install chart
       kubernetes.core.helm:
         chart_ref: "{{ argocd_map.helm.chart.reference }}"
         chart_version: "{{ argocd_vars.kubernetes.helm.chart.version }}"
         kubeconfig: "{{ kubeconfig_path }}"
         name: "{{ argocd_vars.kubernetes.helm.chart.name }}"
-        namespace: "{{ argo-cd_namespace }}"
+        namespace: "{{ argocd_namespace }}"
         timeout: "{{ argocd_map.helm.timeout }}"
         values: "{{ lookup('ansible.builtin.template', 'values.j2') | from_yaml }}"
         create_namespace: true
@@ -140,5 +155,5 @@
 # ## 7. Post-Installation Tasks (Optional)
 
 - name: Post-installation verification
-  debug:
+  ansible.builtin.debug:
     msg: "Argo CD installation completed successfully."

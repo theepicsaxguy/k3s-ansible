@@ -18,17 +18,17 @@ kube_vip_lb_ip_range: "10.25.150.30-10.25.150.150"
 k3s_node_ip: "10.25.150.11,10.25.150.12,10.25.150.13"
 
 # Argo CD Configuration
-argo-cd_version: "v2.5.3" # Specify the desired version
-argo-cd_namespace: "argocd" # Namespace where Argo CD will be installed
-argo-cd_admin_password: "your_secure_password" # Admin password for Argo CD
+argocd_version: "v2.5.3" # Specify the desired version
+argocd_namespace: "argocd" # Namespace where Argo CD will be installed
+argocd_admin_password: "your_secure_password" # Admin password for Argo CD
 
 # Argo CD Domain Configuration
-argo-cd_domain: "argocd.pc-tips.se" # Replace with your desired domain
+argocd_domain: "argocd.pc-tips.se" # Replace with your desired domain
 
-argo-cd_map:
+argocd_map:
   gateway:
     server:
-      hostname: "{{ argo-cd_domain }}"
+      hostname: "{{ argocd_domain }}"
 
 # Rancher Domain Configuration
 rancher_domain: "rancher.pc-tips.se" # Replace with your desired domain
@@ -67,7 +67,7 @@ global_map:
     argocd:
       server:
         admin:
-          password: "{{ argo-cd_admin_password }}"
+          password: "{{ argocd_admin_password }}"
         user:
           name: "admin"
           password: "user_password"

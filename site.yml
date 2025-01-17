@@ -36,12 +36,17 @@
       when: custom_registries
 
 - name: Setup k3s servers
-  hosts: master[0]
+  hosts: master
   environment: "{{ proxy_env | default({}) }}"
   roles:
     - role: k3s_server
       become: true
-
+- name: Setup k3s agents
+  hosts: node
+  environment: "{{ proxy_env | default({}) }}"
+  roles:
+    - role: k3s_agent
+      become: true
 - name: Configure k3s cluster
   hosts: master
   environment: "{{ proxy_env | default({}) }}"
@@ -57,7 +62,7 @@
       become: true
 
 - name: Install Argo CD
-  hosts: master[0]
+  hosts: master
   environment: "{{ proxy_env | default({}) }}"
   roles:
     - role: argo-cd
@@ -85,7 +90,7 @@
       become: true
 
 - name: Storing kubeconfig in the playbook directory
-  hosts: master
+  hosts: localhost
   environment: "{{ proxy_env | default({}) }}"
   tasks:
     - name: Copying kubeconfig from {{ hostvars[groups[group_name_master | default('master')][0]]['ansible_hostname'] }}

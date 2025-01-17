@@ -25,14 +25,22 @@
         server:
           annotations:
             ingress.cilium.io/tls-passthrough: enabled
+      # helm:
+      #   chart:
+      #     reference: '{{ argocd_vars.kubernetes.helm.repository.org }}/{{ argocd_vars.kubernetes.helm.chart.name }}'
+      #     version: '{{ argocd_vars.kubernetes.helm.chart.version[1:] }}'
+      #   repository:
+      #     name: '{{ argocd_vars.kubernetes.helm.repository.org }}/{{ argocd_vars.kubernetes.helm.repository.name }}'
+      #     url: '{{ argocd_vars.kubernetes.helm.repository.url }}/{{ argocd_vars.kubernetes.helm.repository.name }}'
+      #   timeout: 10m0s
       helm:
         chart:
-          reference: "{{ argocd_vars.kubernetes.helm.repository.org }}/{{ argocd_vars.kubernetes.helm.chart.name }}"
-          version: "{{ argocd_vars.kubernetes.helm.chart.version[1:] }}"
+          reference: '{{ argocd_vars.kubernetes.helm.repository.org }}/{{ argocd_vars.kubernetes.helm.chart.name }}'
+          version: '{{ argocd_vars.kubernetes.helm.chart.version[1:] }}'
         repository:
-          name: "{{ argocd_vars.kubernetes.helm.repository.org }}/{{ argocd_vars.kubernetes.helm.repository.name }}"
-          url: "{{ argocd_vars.kubernetes.helm.repository.url }}/{{ argocd_vars.kubernetes.helm.repository.name }}"
-        timeout: 10m0s
+          name: '{{ argocd_vars.kubernetes.helm.repository.org }}/{{ argocd_vars.kubernetes.helm.repository.name }}'
+          url: '{{ argocd_vars.kubernetes.helm.repository.url }}'
+
       metrics:
         service:
           monitor:

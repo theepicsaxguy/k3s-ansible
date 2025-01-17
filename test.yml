@@ -1,0 +1,72 @@
+---
+- name: Test Helm Repository and Chart URL
+  hosts: master[0]
+  gather_facts: true
+  become: true
+  environment: "{{ proxy_env | default({}) }}"
+  roles:
+    - role: argo-cd  # Load the argo-cd role
+  tasks:
+    # Debug variables related to Helm repository and chart
+    - name: Print Helm repository variables
+      ansible.builtin.debug:
+        msg: >
+          Helm repository URL: {{ argocd_vars.kubernetes.helm.repository.url }}
+          Helm repository name: {{ argocd_vars.kubernetes.helm.repository.name }}
+          Constructed URL: {{ argocd_vars.kubernetes.helm.repository.url }}/{{ argocd_vars.kubernetes.helm.repository.name }}
+          Chart Reference: {{ argocd_map.helm.chart.reference }}
+          Chart Version: {{ argocd_vars.kubernetes.helm.chart.version }}
+
+    - name: Add Argo Helm repository
+      ansible.builtin.command:
+        cmd: helm repo add argo https://argoproj.github.io/argo-helm
+      register: repo_add_result
+      ignore_errors: no
+
+    - name: Update Helm repositories
+      ansible.builtin.command:
+        cmd: helm repo update
+      register: repo_update_result
+      ignore_errors: no
+
+    - name: Debug Helm repository addition
+      ansible.builtin.debug:
+        msg: "{{ repo_add_result.stdout_lines }} {{ repo_update_result.stdout_lines }}"
+
+
+    # Debug the result of adding the Helm repository
+    - name: Print result of Helm repository addition
+      ansible.builtin.debug:
+        var: add_repo_result
+
+    # Verify Helm repository list
+    - name: Verify Helm repository list
+      command: helm repo list
+      register: repo_list_result
+      changed_when: false
+
+    # Print Helm repositories
+    - name: Print available Helm repositories
+      ansible.builtin.debug:
+        var: repo_list_result.stdout_lines
+
+    # Test Helm chart installation (dry-run)
+    - name: Test Helm chart installation (dry-run)
+      kubernetes.core.helm:
+        chart_ref: "{{ argocd_map.helm.chart.reference }}"
+        chart_version: "{{ argocd_vars.kubernetes.helm.chart.version }}"
+        kubeconfig: "{{ kubeconfig_path }}"
+        name: "{{ argocd_vars.kubernetes.helm.chart.name }}"
+        namespace: "{{ argocd_namespace }}"
+        timeout: "{{ argocd_map.helm.timeout }}"
+        values: "{{ lookup('ansible.builtin.template', 'values.j2') | from_yaml }}"
+        create_namespace: true
+        update_repo_cache: true
+        wait: true
+        dry_run: true
+      register: dry_run_result
+
+    # Debug result of the dry-run
+    - name: Print Helm dry-run result
+      ansible.builtin.debug:
+        var: dry_run_result
