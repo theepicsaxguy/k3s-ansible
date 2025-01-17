@@ -5,6 +5,8 @@
       - lookup('ansible.builtin.file', kubeconfig_path) is file
       - lookup('ansible.builtin.file', kubeconfig_path) is readable
     msg: "Kubeconfig at {{ kubeconfig_path }} is not accessible."
+
+- name: Import validation tasks
   ansible.builtin.import_tasks:
     file: validation.yaml
   any_errors_fatal: true
