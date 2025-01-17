@@ -28,7 +28,14 @@
       loop: "{{ checksums.content.split('\n') }}"
       when: item | regex_search(certmanager_vars.release.file + '$')
       run_once: true
-
+    - name: Check if cmctl was downloaded
+		  ansible.builtin.stat:
+		    path: '{{ k3s_map.node.directory.bin }}/cmctl'
+		  register: cmctl_stat
+		
+		- name: Debug cmctl existence
+		  ansible.builtin.debug:
+		    msg: "cmctl exists: {{ cmctl_stat.stat.exists }}"
     - name: Install binary
       ansible.builtin.get_url:
         url: '{{ certmanager_project.release.file }}'

@@ -40,7 +40,7 @@ certmanager_vars:
           memory: 128Mi
   release:
     checksum: checksums.txt
-    file: cmctl_linux_arm64
+    file: cmctl_linux_amd64
     repository:
       name: cmctl
       org: cert-manager
