@@ -22,6 +22,22 @@ argo_cd_version: "v2.5.3" # Specify the desired version
 argo_cd_namespace: "argocd" # Namespace where Argo CD will be installed
 argo_cd_admin_password: "your_secure_password" # Admin password for Argo CD
 
+# Argo CD Domain Configuration
+argo_cd_domain: "argocd.example.com"  # Replace with your desired domain
+
+argocd_map:
+  gateway:
+    server:
+      hostname: "{{ argo_cd_domain }}"
+
+# Rancher Domain Configuration
+rancher_domain: "rancher.example.com"  # Replace with your desired domain
+
+rancher_map:
+  gateway:
+    server:
+      hostname: "{{ rancher_domain }}"
+
 # External DNS Configuration
 externaldns_vars:
   cloudflare:
