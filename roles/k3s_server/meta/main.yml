@@ -12,12 +12,10 @@ argument_specs:
           - Enable cilium BGP control plane for LB services and pod cidrs.
           - Disables the use of MetalLB.
         type: bool
-        default: ~
-
+        default:
       cilium_iface:
         description: The network interface used for when Cilium is enabled
-        default: ~
-
+        default:
       extra_server_args:
         description: Extra arguments for server nodes
         default: ""
@@ -65,19 +63,16 @@ argument_specs:
       kube_vip_bgp_peers:
         description: List of BGP peer ASN & address pairs
         default: []
-
       kube_vip_bgp_peers_groups:
         description: Inventory group in which to search for additional kube_vip_bgp_peers parameters to merge.
-        default: ['k3s_master']
-
+        default: ["k3s_master"]
       kube_vip_iface:
         description:
           - Explicitly define an interface that ALL control nodes
           - should use to propagate the VIP, define it here.
           - Otherwise, kube-vip will determine the right interface
           - automatically at runtime.
-        default: ~
-
+        default:
       kube_vip_tag_version:
         description: Image tag for kube-vip
         default: v0.7.2
@@ -88,8 +83,7 @@ argument_specs:
 
       kube_vip_lb_ip_range:
         description: IP range for kube-vip load balancer
-        default: ~
-
+        default:
       metal_lb_controller_tag_version:
         description: Image tag for MetalLB
         default: v0.14.3
@@ -110,7 +104,7 @@ argument_specs:
         description:
           - Internet proxy configurations.
           - See https://docs.k3s.io/advanced#configuring-an-http-proxy for details
-        default: ~
+        default:
         options:
           HTTP_PROXY:
             description: HTTP internet proxy

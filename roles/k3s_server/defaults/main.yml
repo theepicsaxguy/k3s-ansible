@@ -17,8 +17,7 @@ kube_vip_bgp_peeraddress: 192.168.30.1
 kube_vip_bgp_peeras: "64512"
 
 kube_vip_bgp_peers: []
-kube_vip_bgp_peers_groups: ['k3s_master']
-
+kube_vip_bgp_peers_groups: ["k3s_master"]
 metal_lb_controller_tag_version: v0.14.3
 metal_lb_speaker_tag_version: v0.14.3
 metal_lb_type: native
@@ -31,7 +30,8 @@ server_init_args: >-
     {% if ansible_hostname == hostvars[groups[group_name_master | default('master')][0]]['ansible_hostname'] %}
       --cluster-init
     {% else %}
-      --server https://{{ hostvars[groups[group_name_master | default('master')][0]].k3s_node_ip | split(",") | first | ansible.utils.ipwrap }}:6443
+      --server https://{{ hostvars[groups[group_name_master | default('master')][0]].k3s_node_ip | split(",") | first | ansible.utils.ipwrap
+  }}:6443
     {% endif %}
     --token {{ k3s_token }}
   {% endif %}

@@ -1,7 +1,7 @@
 ---
 - name: Role Facts
   ansible.builtin.include_role:
-    name: '{{ item }}'
+    name: "{{ item }}"
     tasks_from: facts
   loop:
     - helm
@@ -12,9 +12,9 @@
   block:
     - name: Remove plugins
       kubernetes.core.helm_plugin:
-        plugin_name: '{{ item.name }}'
+        plugin_name: "{{ item.name }}"
         state: absent
-      loop: '{{ helm_vars.plugins }}'
+      loop: "{{ helm_vars.plugins }}"
       when:
         - "'helm' in ansible_facts.packages"
         - "'python3-kubernetes' in ansible_facts.packages"
@@ -24,17 +24,17 @@
       block:
         - name: Remove plugin packages
           ansible.builtin.apt:
-            name: '{{ item.packages }}'
+            name: "{{ item.packages }}"
             state: absent
             autoremove: true
             clean: true
             purge: true
-          loop: '{{ helm_vars.plugins }}'
+          loop: "{{ helm_vars.plugins }}"
           when: item.packages is defined
 
         - name: Remove packages
           ansible.builtin.apt:
-            name: '{{ item }}'
+            name: "{{ item }}"
             state: absent
             autoremove: true
             clean: true
@@ -46,10 +46,10 @@
 
         - name: Remove configuration files
           ansible.builtin.file:
-            path: '{{ item }}'
+            path: "{{ item }}"
             state: absent
           loop:
-            - '{{ helm_map.directory.share }}'
+            - "{{ helm_map.directory.share }}"
             - /etc/apt/sources.list.d/helm-{{ helm_vars.release.repository.channel }}.sources
             - /etc/systemd/system/helm-cache.service
             - /etc/systemd/system/helm-cache.timer
@@ -66,7 +66,7 @@
     - name: Remove variables from environment file
       ansible.builtin.lineinfile:
         path: /etc/environment
-        line: '{{ item.key }}={{ item.value }}'
+        line: "{{ item.key }}={{ item.value }}"
         regexp: ^{{ item.key }}
         state: absent
       loop: "{{ lookup('ansible.builtin.dict', helm_project.environment | combine(helm_vars.environment)) }}"

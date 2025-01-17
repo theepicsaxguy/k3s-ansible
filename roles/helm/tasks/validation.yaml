@@ -9,7 +9,7 @@
   block:
     - name: Validate release key url
       ansible.builtin.uri:
-        url: '{{ helm_map.release.key }}'
+        url: "{{ helm_map.release.key }}"
         timeout: 5
       register: result
       delay: 1
@@ -18,7 +18,7 @@
 
     - name: Validate release package url
       ansible.builtin.uri:
-        url: '{{ helm_project.release.package }}'
+        url: "{{ helm_project.release.package }}"
         timeout: 5
       register: result
       delay: 1
@@ -27,9 +27,9 @@
 
     - name: Validate release plugins url
       ansible.builtin.uri:
-        url: '{{ release.repository.url }}/releases/tag/{{ release.version }}'
+        url: "{{ release.repository.url }}/releases/tag/{{ release.version }}"
         timeout: 5
-      loop: '{{ helm_vars.plugins }}'
+      loop: "{{ helm_vars.plugins }}"
       loop_control:
         loop_var: release
       register: result

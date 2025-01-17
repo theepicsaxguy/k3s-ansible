@@ -13,7 +13,7 @@
   block:
     - name: Install packages
       ansible.builtin.apt:
-        name: '{{ item }}'
+        name: "{{ item }}"
         autoremove: true
         update_cache: true
       loop:
@@ -25,9 +25,10 @@
     - name: Add variables to environment file
       ansible.builtin.lineinfile:
         path: /etc/environment
-        line: '{{ item.key }}={{ item.value }}'
+        line: "{{ item.key }}={{ item.value }}"
         regexp: ^{{ item.key }}
-      loop: "{{ lookup('ansible.builtin.dict', helm_project.environment | combine(helm_vars.environment)) | sort(attribute='key') }}"
+      loop: "{{ lookup('ansible.builtin.dict', helm_project.environment | combine(helm_vars.environment)) | sort(attribute='key')
+        }}"
 
     - name: Initialize variables
       ansible.builtin.shell: |
@@ -48,11 +49,11 @@
       block:
         - name: Download key
           ansible.builtin.get_url:
-            url: '{{  helm_map.release.key }}'
+            url: "{{  helm_map.release.key }}"
             dest: /tmp/{{ helm_vars.release.repository.key }}
             owner: root
             group: root
-            mode: '644'
+            mode: "644"
           register: result
           delay: 1
           retries: 3
@@ -60,7 +61,8 @@
 
         - name: Dearmor key
           ansible.builtin.command:
-            cmd: gpg --dearmor -o /usr/share/keyrings/{{ helm_vars.release.key }} /tmp/{{ helm_vars.release.repository.key }}
+            cmd: gpg --dearmor -o /usr/share/keyrings/{{ helm_vars.release.key }} /tmp/{{ helm_vars.release.repository.key
+              }}
           changed_when: dearmor_key.rc == 0
           register: dearmor_key
 
@@ -79,7 +81,7 @@
           ansible.builtin.get_url:
             url: https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
             dest: /tmp/get_helm.sh
-            mode: '700'
+            mode: "700"
 
         - name: Run Helm installation script
           ansible.builtin.command:
@@ -100,7 +102,7 @@
             dest: /etc/systemd/system/helm-cache.service
             owner: root
             group: root
-            mode: '644'
+            mode: "644"
 
         - name: Create service timer file
           ansible.builtin.template:
@@ -108,7 +110,7 @@
             dest: /etc/systemd/system/helm-cache.timer
             owner: root
             group: root
-            mode: '644'
+            mode: "644"
 
     - name: Helm Plugins
       ansible.builtin.import_tasks:

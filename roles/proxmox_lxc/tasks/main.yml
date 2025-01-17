@@ -7,7 +7,8 @@
 
 - name: Filter out files that do not exist
   ansible.builtin.set_fact:
-    proxmox_lxc_filtered_files: '{{ stat_results.results | rejectattr("stat.exists", "false") | map(attribute="stat.path") }}' # noqa yaml[line-length]
+    proxmox_lxc_filtered_files: '{{ stat_results.results | rejectattr("stat.exists", "false") | map(attribute="stat.path")
+      }}' # noqa yaml[line-length]
 
 # https://gist.github.com/triangletodd/02f595cd4c0dc9aac5f7763ca2264185
 - name: Ensure lxc config has the right apparmor profile

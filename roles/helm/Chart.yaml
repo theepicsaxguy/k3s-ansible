@@ -1,3 +1,4 @@
+---
 apiVersion: v2
 name: helm
 description: Documentation generator for helm Ansible role

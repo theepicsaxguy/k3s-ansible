@@ -22,7 +22,7 @@ argument_specs:
         description:
           - Internet proxy configurations.
           - See https://docs.k3s.io/advanced#configuring-an-http-proxy for details
-        default: ~
+        default:
         options:
           HTTP_PROXY:
             description: HTTP internet proxy

@@ -1,10 +1,10 @@
 ---
 - name: Role Facts
   ansible.builtin.include_role:
-    name: '{{ role }}'
+    name: "{{ role }}"
     tasks_from: facts
   loop:
-    - external-dns
+    - external_dns
     - k3s
     - victoria-metrics
     - coredns
@@ -17,7 +17,7 @@
   block:
     - name: Validate project url
       ansible.builtin.uri:
-        url: '{{ coredns_project.url }}/{{ coredns_project.tag }}'
+        url: "{{ coredns_project.url }}/{{ coredns_project.tag }}"
         timeout: 5
       register: result
       delay: 1
