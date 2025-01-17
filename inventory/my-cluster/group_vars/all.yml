@@ -25,7 +25,7 @@ argo_cd_admin_password: "your_secure_password" # Admin password for Argo CD
 # Argo CD Domain Configuration
 argo_cd_domain: "argocd.example.com"  # Replace with your desired domain
 
-argocd_map:
+argo_cd_map:
   gateway:
     server:
       hostname: "{{ argo_cd_domain }}"

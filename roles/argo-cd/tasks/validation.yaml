@@ -1,6 +1,8 @@
 ---
 - name: Role Facts
   ansible.builtin.include_role:
+    vars:
+      apiserver_endpoint: "{{ apiserver_endpoint }}"
     name: '{{ role }}'
     tasks_from: facts
   loop:

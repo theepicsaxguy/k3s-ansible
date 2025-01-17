@@ -1,9 +1,14 @@
 ---
-- name: Ensure kubeconfig is accessible
+- name: Check if kubeconfig exists
+  ansible.builtin.stat:
+    path: "{{ kubeconfig_path }}"
+  register: kubeconfig_stat
+
+- name: Ensure kubeconfig exists
   ansible.builtin.assert:
     that:
-      - lookup('ansible.builtin.file', kubeconfig_path) is file
-      - lookup('ansible.builtin.file', kubeconfig_path) is readable
+      - kubeconfig_stat.stat.exists
+      - kubeconfig_stat.stat.readable
     msg: "Kubeconfig at {{ kubeconfig_path }} is not accessible."
 
 - name: Import validation tasks
@@ -22,7 +27,7 @@
     - name: Validate service state
       ansible.builtin.wait_for:
         port: '{{ k3s_vars.server.api.port }}'
-        state: drained
+        state: started
         timeout: 30
       any_errors_fatal: true
 
