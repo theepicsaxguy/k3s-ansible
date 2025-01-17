@@ -52,7 +52,6 @@
       ansible.builtin.debug:
         msg: "An error occurred during Argo CD namespace creation or setup."
 
-
     - name: Install binary
       ansible.builtin.get_url:
         url: "{{ argocd_project.release.file }}"
