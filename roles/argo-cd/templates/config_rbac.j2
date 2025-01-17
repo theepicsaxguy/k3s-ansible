@@ -1,5 +1,5 @@
 policy.csv: |
 {% for user in argocd_resources.server.users %}
-  {{ ', '.join(['g', user.name, 'role']) | indent(2) }}:{{ user.role }}
+  {{ ', '.join(['g', user.name, 'role']) | indent(2) }}: role:admin
 {% endfor %}
 policy.default: role:readonly

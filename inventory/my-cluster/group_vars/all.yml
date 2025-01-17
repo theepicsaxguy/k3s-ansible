@@ -59,6 +59,8 @@ externaldns_vars:
         name: "external-dns"          # Helm chart name for External DNS
         version: "v5.4.0"             # Specify the required chart version
 
+kubeconfig_path: "/etc/rancher/k3s/k3s.yaml"  # Ensure this path is correct
+
 # Define External DNS API Token in global_map
 global_map:
   credentials:

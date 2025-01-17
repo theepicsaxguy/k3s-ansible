@@ -36,7 +36,7 @@
       when: custom_registries
 
 - name: Setup k3s servers
-  hosts: master
+  hosts: master[0]
   environment: "{{ proxy_env | default({}) }}"
   roles:
     - role: k3s_server
@@ -58,7 +58,7 @@
       become: true
 
 - name: Install Argo CD
-  hosts: master
+  hosts: master[0]
   environment: "{{ proxy_env | default({}) }}"
   roles:
     - role: argo-cd

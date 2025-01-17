@@ -1,10 +1,20 @@
 ---
-- name: Role Validation
+- name: Ensure kubeconfig is accessible
+  ansible.builtin.assert:
+    that:
+      - lookup('ansible.builtin.file', kubeconfig_path) is file
+      - lookup('ansible.builtin.file', kubeconfig_path) is readable
+    msg: "Kubeconfig at {{ kubeconfig_path }} is not accessible."
   ansible.builtin.import_tasks:
     file: validation.yaml
   any_errors_fatal: true
 
-- name: Role Provisioning
+- name: Create Argo CD namespace
+  kubernetes.core.k8s:
+    api_version: v1
+    kind: Namespace
+    metadata:
+      name: "{{ argo_cd_namespace }}"
   when: ansible_host in k3s_map.server.hosts
   block:
     - name: Validate service state
@@ -39,12 +49,13 @@
         mode: '755'
       register: result
       delay: 1
-      retries: 3
+      retries: 5  # Increased from 3
+      timeout: 600
       until: result is not failed
 
     - name: Add repository
       kubernetes.core.helm_repository:
-        name: '{{ argocd_vars.kubernetes.helm.repository.org }}'
+        name: '{{ argocd_vars.kubernetes.helm.repository.name }}'
         repo_url: '{{ argocd_map.helm.repository.url }}'
 
     - name: Chart Setup
