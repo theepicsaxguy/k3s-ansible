@@ -28,34 +28,32 @@
       loop: "{{ checksums.content.split('\n') }}"
       when: item | regex_search(certmanager_vars.release.file + '$')
       run_once: true
-
-    - name: Check if cmctl was downloaded
-      ansible.builtin.stat:
-        path: '{{ k3s_map.node.directory.bin }}/cmctl'
-      register: cmctl_stat
-
-    - name: Debug cmctl existence
-      ansible.builtin.debug:
-        msg: "cmctl exists: {{ cmctl_stat.stat.exists }}"
-
-    - name: Install binary
-      ansible.builtin.get_url:
-        url: '{{ certmanager_project.release.file }}'
-        checksum: sha256:{{ sha256_checksum }}
-        dest: '{{ k3s_map.node.directory.bin }}/cmctl'
-        owner: root
-        group: root
-        mode: '755'
-      register: result
-      delay: 1
-      retries: 3
-      until: result is not failed
-
-    - name: Create symlink
-      ansible.builtin.file:
-        path: '{{ k3s_map.node.directory.bin }}/kubectl-cert_manager'
-        src: '{{ k3s_map.node.directory.bin }}/cmctl'
-        state: link
+		- name: Check if cmctl was downloaded
+		  ansible.builtin.stat:
+		    path: '{{ k3s_map.node.directory.bin }}/cmctl'
+		  register: cmctl_stat
+		
+		- name: Install binary
+		  ansible.builtin.get_url:
+		    url: '{{ certmanager_project.release.file }}'
+		    checksum: sha256:{{ sha256_checksum }}
+		    dest: '{{ k3s_map.node.directory.bin }}/cmctl'
+		    owner: root
+		    group: root
+		    mode: '755'
+		  register: result
+		  delay: 5
+		  retries: 5
+		  until: result is not failed
+		  when: not cmctl_stat.stat.exists
+		  ignore_errors: false
+		
+		- name: Create symlink
+		  ansible.builtin.file:
+		    path: '{{ k3s_map.node.directory.bin }}/kubectl-cert_manager'
+		    src: '{{ k3s_map.node.directory.bin }}/cmctl'
+		    state: link
+		  when: cmctl_stat.stat.exists
 
     - name: Add repository
       kubernetes.core.helm_repository:
