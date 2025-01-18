@@ -94,30 +94,34 @@
         - name: Set chart postinstall fact
           ansible.builtin.set_fact:
             certmanager_postinstall: false
-
-        - name: Print Helm chart repository and chart details
-          ansible.builtin.debug:
-            msg: >
-              Installing Helm chart from repository: "{{ certmanager_vars.kubernetes.helm.repository.url }}"
-              Chart name: "{{ certmanager_vars.kubernetes.helm.chart.name }}"
-              Chart version: "{{ certmanager_vars.kubernetes.helm.chart.version }}"
-
-        - name: Install chart
-          kubernetes.core.helm:
-            chart_ref: '{{ certmanager_map.helm.chart.reference }}'
-            chart_version: '{{ certmanager_vars.kubernetes.helm.chart.version }}'
-            kubeconfig: '{{ k3s_project.cluster.kubeconfig }}'
-            name: '{{ certmanager_vars.kubernetes.helm.chart.name }}'
-            namespace: '{{ certmanager_vars.kubernetes.namespace }}'
-            timeout: '{{ certmanager_map.helm.timeout }}'
-            values: "{{ lookup('ansible.builtin.template', 'values.j2') | from_yaml }}"
-            create_namespace: true
-            update_repo_cache: true        # <<-- Added to fix "repo not found" error
-            wait: true
-          register: result
-          delay: 1
-          retries: 3
-          until: result is not failed
+	
+				- name: Add Jetstack Helm repository
+				  kubernetes.core.helm_repository:
+				    name: cert-manager            # <-- The repo name is "cert-manager"
+				    repo_url: "https://charts.jetstack.io"
+				    state: present
+				
+				- name: Install cert-manager
+				  kubernetes.core.helm:
+				    release_name: cert-manager
+				    release_namespace: cert-manager
+				    name: cert-manager
+				    namespace: cert-manager
+				    create_namespace: true
+				
+				    # Must match the repository name above: "cert-manager"
+				    # Then slash chart name: "cert-manager"
+				    chart_ref: "cert-manager/cert-manager"
+				
+				    # Remove any leading 'v'
+				    chart_version: "1.16.3"
+				
+				    update_repo_cache: true
+				    wait: true
+				    values:
+				      prometheus:
+				        enabled: false
+				      installCRDs: true
 
         - name: Create self-signed cluster issuer
           kubernetes.core.k8s:
