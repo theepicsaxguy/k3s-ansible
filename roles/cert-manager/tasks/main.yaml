@@ -8,80 +8,79 @@
   when: ansible_host in k3s_map.server.hosts
   block:
 
-    # - name: Validate service state
-    #   ansible.builtin.wait_for:
-    #     port: "{{ k3s_vars.server.api.port }}"
-    #     state: drained
-    #     timeout: 30
-    #   any_errors_fatal: true
+    - name: Validate service state
+      ansible.builtin.wait_for:
+        port: "{{ k3s_vars.server.api.port }}"
+        state: drained
+        timeout: 30
+      any_errors_fatal: true
 
-    # - name: Set checksums fact
-    #   ansible.builtin.uri:
-    #     url: "{{ certmanager_project.release.checksum }}"
-    #     return_content: true
-    #   register: checksums
-    #   check_mode: false
-    #   run_once: true
+    - name: Set checksums fact
+      ansible.builtin.uri:
+        url: "{{ certmanager_project.release.checksum }}"
+        return_content: true
+      register: checksums
+      check_mode: false
+      run_once: true
 
-    # - name: Set sha256 checksum fact
-    #   ansible.builtin.set_fact:
-    #     sha256_checksum: "{{ item.split(' ')[0] }}"
-    #   loop: "{{ checksums.content.split('\n') }}"
-    #   when: item | regex_search(certmanager_vars.release.file + '$') or item | regex_search('/' + certmanager_vars.release.file + '$')
-    #   run_once: true
+    - name: Set sha256 checksum fact
+      ansible.builtin.set_fact:
+        sha256_checksum: "{{ item.split(' ')[0] }}"
+      loop: "{{ checksums.content.split('\n') }}"
+      when: item | regex_search(certmanager_vars.release.file + '$') or item | regex_search('/' + certmanager_vars.release.file + '$')
+      run_once: true
 
-    # - name: Set cmctl download URL
-    #   ansible.builtin.set_fact:
-    #     cmctl_download_url: "{{ certmanager_project.release.url }}/cmctl_{{ cli_os | default('unknown') }}_{{ cli_arch | default('unknown') }}"
+    - name: Set cmctl download URL
+      ansible.builtin.set_fact:
+        cmctl_download_url: "{{ certmanager_project.release.url }}/cmctl_{{ cli_os | default('unknown') }}_{{ cli_arch | default('unknown') }}"
 
-    # - name: Check if cmctl is already installed
-    #   ansible.builtin.stat:
-    #     path: "{{ certmanager_vars.bin_directory }}/cmctl"
-    #   register: cmctl_stat
+    - name: Check if cmctl is already installed
+      ansible.builtin.stat:
+        path: "{{ certmanager_vars.bin_directory }}/cmctl"
+      register: cmctl_stat
 
-    # - name: Download cmctl binary
-    #   ansible.builtin.get_url:
-    #     url: "{{ cmctl_download_url }}"
-    #     dest: "/tmp/cmctl"
-    #     mode: '0755'
-    #     owner: root
-    #     group: root
-    #     checksum: "sha256:{{ sha256_checksum }}"
-    #   when: not cmctl_stat.stat.exists
-    #   register: download_result
-    #   retries: 5
-    #   delay: 5
-    #   until: download_result is succeeded
-    #   failed_when: download_result.failed and download_result.retries >= 5
+    - name: Download cmctl binary
+      ansible.builtin.get_url:
+        url: "{{ cmctl_download_url }}"
+        dest: "/tmp/cmctl"
+        mode: '0755'
+        owner: root
+        group: root
+        checksum: "sha256:{{ sha256_checksum }}"
+      when: not cmctl_stat.stat.exists
+      register: download_result
+      retries: 5
+      delay: 5
+      until: download_result is succeeded
+      failed_when: download_result.failed and download_result.retries >= 5
 
-    # - name: Check if cmctl is already installed
-    #   ansible.builtin.stat:
-    #     path: "{{ certmanager_vars.bin_directory }}/cmctl"
-    #   register: cmctl_stat
+    - name: Check if cmctl is already installed
+      ansible.builtin.stat:
+        path: "{{ certmanager_vars.bin_directory }}/cmctl"
+      register: cmctl_stat
 
-    # - name: Move and rename cmctl binary to bin directory
-    #   ansible.builtin.command:
-    #     cmd: mv /tmp/"{{ cmctl_download_url.split('/')[-1] }}" "{{ certmanager_vars.bin_directory }}/cmctl"
-    #   when: download_result is succeeded
-    #   register: move_result
+    - name: Move and rename cmctl binary to bin directory
+      ansible.builtin.command:
+        cmd: mv /tmp/"{{ cmctl_download_url.split('/')[-1] }}" "{{ certmanager_vars.bin_directory }}/cmctl"
+      when: download_result is succeeded
+      register: move_result
 
-    # - name: Create symlink for cmctl
-    #   ansible.builtin.file:
-    #     path: "{{ certmanager_vars.bin_directory }}/kubectl-cert_manager"
-    #     src: "{{ certmanager_vars.bin_directory }}/cmctl"
-    #     state: link
-    #     force: yes
-    #   when:
-    #     - not ansible_check_mode
-    #     - move_result is succeeded or cmctl_stat.stat.exists
+    - name: Create symlink for cmctl
+      ansible.builtin.file:
+        path: "{{ certmanager_vars.bin_directory }}/kubectl-cert_manager"
+        src: "{{ certmanager_vars.bin_directory }}/cmctl"
+        state: link
+        force: yes
+      when:
+        - not ansible_check_mode
+        - move_result is succeeded or cmctl_stat.stat.exists
 
-    # - name: Simulate symlink creation for cmctl in check mode
-    #   ansible.builtin.debug:
-    #     msg: "Would create symlink '{{ certmanager_vars.bin_directory }}/kubectl-cert_manager' pointing to '{{ certmanager_vars.bin_directory }}/cmctl'."
-    #   when: 
-    #     - ansible_check_mode
-    #     - not cmctl_stat.stat.exists
-
+    - name: Simulate symlink creation for cmctl in check mode
+      ansible.builtin.debug:
+        msg: "Would create symlink '{{ certmanager_vars.bin_directory }}/kubectl-cert_manager' pointing to '{{ certmanager_vars.bin_directory }}/cmctl'."
+      when:
+        - ansible_check_mode
+        - not cmctl_stat.stat.exists
 
     - name: Add Jetstack Helm repository
       kubernetes.core.helm_repository:
@@ -95,6 +94,7 @@
         - name: Set chart postinstall fact
           ansible.builtin.set_fact:
             certmanager_postinstall: false
+
         - name: Print Helm chart repository and chart details
           ansible.builtin.debug:
             msg: >
@@ -112,7 +112,7 @@
             timeout: '{{ certmanager_map.helm.timeout }}'
             values: "{{ lookup('ansible.builtin.template', 'values.j2') | from_yaml }}"
             create_namespace: true
-            update_repo_cache: true
+            update_repo_cache: true        # <<-- Added to fix "repo not found" error
             wait: true
           register: result
           delay: 1
