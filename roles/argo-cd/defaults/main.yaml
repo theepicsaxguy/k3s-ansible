@@ -176,7 +176,7 @@ argocd_vars:
       subdomain: argocd
   release:
     checksum: cli_checksums.txt
-    file: argocd-linux-arm64
+    file: argocd-linux-amd64
     repository:
       name: argo-cd
       org: argoproj

@@ -76,28 +76,15 @@ global_map:
         api:
           token: "your-api-token" # Replace with your actual API token
 
-# cert_manager Configuration
-# cert_manager Configuration
-cert_manager_version: "v1.16.3"  # Updated to the latest version
-cert_manager_namespace: "cert_manager"
+
+cli_arch: "{{ 'arm64' if ansible_architecture == 'aarch64' else 'amd64' }}"
+cli_os: "{{ 'linux' if ansible_facts['os_family'] in ['Debian', 'RedHat'] else ansible_system | lower }}"
+
+
+cert_manager_version: "v1.16.3"
+cert_manager_namespace: "cert-manager"
 cert_manager_issuer: "letsencrypt-prod"
 
-# Define cert_manager Project Variables
-certmanager_project:
-  url: "https://github.com/cert-manager/cmctl"  # Verified URL
-  tag: "v2.2.0"  # Updated to the latest stable cmctl version
-  release:
-    checksum: "https://github.com/cert-manager/cmctl/releases/download/v2.2.0/checksums.txt"  # Verified URL
-    file: "cmctl_linux_amd64"  # Verified file name for Linux 64-bit
-
-# Define additional cert_manager Metrics Variables
-certmanager_map:
-  metrics:
-    service:
-      monitor:
-        scrape:
-          interval: "30s" # Fallback if not set in role
-          timeout: "10s" # Fallback if not set in role
 
 # VictoriaMetrics Configuration
 victoriametrics_map:

@@ -20,6 +20,7 @@
         values: "{{ lookup('ansible.builtin.template', 'values.j2') | from_yaml }}"
         reset_values: false
         reuse_values: true
+        update_repo_cache: true  # <<-- Also add here for consistency
         wait: true
       register: result
       delay: 1

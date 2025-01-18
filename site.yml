@@ -7,6 +7,11 @@
         that: ansible_version.full is version_compare('2.11', '>=')
         msg: >
           "Ansible is out of date. See here for more info: https://docs.technotim.live/posts/ansible-automation/"
+    - name: Set architecture and OS variables
+      ansible.builtin.set_fact:
+        cli_arch: "{{ 'arm64' if ansible_architecture == 'aarch64' else 'amd64' }}"
+        cli_os: "{{ 'linux' if ansible_facts['os_family'] in ['Debian', 'RedHat'] else ansible_system | lower }}"
+      run_once: true
 
 - name: Prepare Proxmox cluster
   hosts: proxmox

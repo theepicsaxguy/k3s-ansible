@@ -4,7 +4,7 @@
     name: "{{ role }}"
     tasks_from: facts
   loop:
-    - external_dns
+    - external-dns
     - k3s
     #- victoria-metrics
     - coredns
