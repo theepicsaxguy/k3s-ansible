@@ -9,11 +9,12 @@
   block:
     - name: Validate service state
       ansible.builtin.wait_for:
-        host: "{{ ansible_host | default('127.0.0.1') }}"
-        port: '{{ k3s_vars.server.api.port }}'
-        state: started           # Wait for the port to become *available*, not drained
-        timeout: 120            # Allow up to 2 minutes for the K3s API to come up
-        delay: 5                # Optional initial delay before the first check
+        # Use the apiserver endpoint from group_vars:
+        host: "{{ k3s_map.cluster.dns }}"
+        port: "{{ k3s_vars.server.api.port }}"
+        state: started         # Wait for port 6443 to be listening
+        timeout: 120          # Give it up to 2 minutes
+        delay: 5              # Optional initial delay
       any_errors_fatal: true
 
     - name: Set checksums fact
@@ -34,7 +35,7 @@
     - name: Install binary
       ansible.builtin.get_url:
         url: '{{ argocd_project.release.file }}'
-        checksum: sha256:{{ sha256_checksum }}
+        checksum: "sha256:{{ sha256_checksum }}"
         dest: '{{ k3s_map.node.directory.bin }}/argocd'
         owner: root
         group: root
