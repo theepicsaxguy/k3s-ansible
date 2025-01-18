@@ -75,25 +75,7 @@ global_map:
       cloudflare:
         api:
           token: "your-api-token" # Replace with your actual API token
-certmanager_vars:
-  release:
-    repository:
-      org: "cert-manager"
-      name: "cmctl"
-    version: "v2.1.1"
-    checksum: "https://github.com/cert-manager/cmctl/releases/download/v2.1.1/checksums.txt"
-    file: "cmctl_linux_amd64"
-  bin_directory: "/usr/local/bin"  # Set this to the correct directory for your environment
 
-  kubernetes:
-    helm:
-      repository:
-        org: "cert-manager"
-        name: "cert-manager"
-        url: "https://charts.jetstack.io"
-      chart:
-        name: "cert-manager"
-        version: "v1.16.3"
 
 cli_arch: "{{ 'arm64' if ansible_architecture == 'aarch64' else 'amd64' }}"
 cli_os: "{{ 'linux' if ansible_facts['os_family'] in ['Debian', 'RedHat'] else ansible_system | lower }}"

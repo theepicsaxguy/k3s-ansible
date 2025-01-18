@@ -8,93 +8,86 @@
   when: ansible_host in k3s_map.server.hosts
   block:
 
-    - name: Validate service state
-      ansible.builtin.wait_for:
-        port: "{{ k3s_vars.server.api.port }}"
-        state: drained
-        timeout: 30
-      any_errors_fatal: true
+    # - name: Validate service state
+    #   ansible.builtin.wait_for:
+    #     port: "{{ k3s_vars.server.api.port }}"
+    #     state: drained
+    #     timeout: 30
+    #   any_errors_fatal: true
 
-    - name: Set checksums fact
-      ansible.builtin.uri:
-        url: "{{ certmanager_project.release.checksum }}"
-        return_content: true
-      register: checksums
-      check_mode: false
-      run_once: true
+    # - name: Set checksums fact
+    #   ansible.builtin.uri:
+    #     url: "{{ certmanager_project.release.checksum }}"
+    #     return_content: true
+    #   register: checksums
+    #   check_mode: false
+    #   run_once: true
 
-    - name: Set sha256 checksum fact
-      ansible.builtin.set_fact:
-        sha256_checksum: "{{ item.split(' ')[0] }}"
-      loop: "{{ checksums.content.split('\n') }}"
-      when: item | regex_search(certmanager_vars.release.file + '$') or item | regex_search('/' + certmanager_vars.release.file + '$')
-      run_once: true
+    # - name: Set sha256 checksum fact
+    #   ansible.builtin.set_fact:
+    #     sha256_checksum: "{{ item.split(' ')[0] }}"
+    #   loop: "{{ checksums.content.split('\n') }}"
+    #   when: item | regex_search(certmanager_vars.release.file + '$') or item | regex_search('/' + certmanager_vars.release.file + '$')
+    #   run_once: true
 
-    - name: Set cmctl download URL
-      ansible.builtin.set_fact:
-        cmctl_download_url: "{{ certmanager_project.release.url }}/cmctl_{{ cli_os | default('unknown') }}_{{ cli_arch | default('unknown') }}"
+    # - name: Set cmctl download URL
+    #   ansible.builtin.set_fact:
+    #     cmctl_download_url: "{{ certmanager_project.release.url }}/cmctl_{{ cli_os | default('unknown') }}_{{ cli_arch | default('unknown') }}"
 
-    - name: Debug cmctl download URL
-      ansible.builtin.debug:
-        msg: "cmctl download URL is {{ cmctl_download_url }}"
+    # - name: Check if cmctl is already installed
+    #   ansible.builtin.stat:
+    #     path: "{{ certmanager_vars.bin_directory }}/cmctl"
+    #   register: cmctl_stat
 
-    - name: Check if cmctl is already installed
-      ansible.builtin.stat:
-        path: "{{ certmanager_vars.bin_directory }}/cmctl"
-      register: cmctl_stat
+    # - name: Download cmctl binary
+    #   ansible.builtin.get_url:
+    #     url: "{{ cmctl_download_url }}"
+    #     dest: "/tmp/cmctl"
+    #     mode: '0755'
+    #     owner: root
+    #     group: root
+    #     checksum: "sha256:{{ sha256_checksum }}"
+    #   when: not cmctl_stat.stat.exists
+    #   register: download_result
+    #   retries: 5
+    #   delay: 5
+    #   until: download_result is succeeded
+    #   failed_when: download_result.failed and download_result.retries >= 5
 
-    - name: Download cmctl binary
-      ansible.builtin.get_url:
-        url: "{{ cmctl_download_url }}"
-        dest: "/tmp/cmctl"
-        mode: '0755'
-        owner: root
-        group: root
-        checksum: "sha256:{{ sha256_checksum }}"
-      when: not cmctl_stat.stat.exists
-      register: download_result
-      retries: 5
-      delay: 5
-      until: download_result is succeeded
-      failed_when: download_result.failed and download_result.retries >= 5
+    # - name: Check if cmctl is already installed
+    #   ansible.builtin.stat:
+    #     path: "{{ certmanager_vars.bin_directory }}/cmctl"
+    #   register: cmctl_stat
 
-    - name: Check if cmctl is already installed
-      ansible.builtin.stat:
-        path: "{{ certmanager_vars.bin_directory }}/cmctl"
-      register: cmctl_stat
+    # - name: Move and rename cmctl binary to bin directory
+    #   ansible.builtin.command:
+    #     cmd: mv /tmp/"{{ cmctl_download_url.split('/')[-1] }}" "{{ certmanager_vars.bin_directory }}/cmctl"
+    #   when: download_result is succeeded
+    #   register: move_result
 
-    - name: Move and rename cmctl binary to bin directory
-      ansible.builtin.command:
-        cmd: mv /tmp/"{{ cmctl_download_url.split('/')[-1] }}" "{{ certmanager_vars.bin_directory }}/cmctl"
-      when: download_result is succeeded
-      register: move_result
+    # - name: Create symlink for cmctl
+    #   ansible.builtin.file:
+    #     path: "{{ certmanager_vars.bin_directory }}/kubectl-cert_manager"
+    #     src: "{{ certmanager_vars.bin_directory }}/cmctl"
+    #     state: link
+    #     force: yes
+    #   when:
+    #     - not ansible_check_mode
+    #     - move_result is succeeded or cmctl_stat.stat.exists
 
-    - name: Debug move result
-      ansible.builtin.debug:
-        var: move_result
-
-    - name: Create symlink for cmctl
-      ansible.builtin.file:
-        path: "{{ certmanager_vars.bin_directory }}/kubectl-cert_manager"
-        src: "{{ certmanager_vars.bin_directory }}/cmctl"
-        state: link
-        force: yes
-      when:
-        - not ansible_check_mode
-        - move_result is succeeded or cmctl_stat.stat.exists
-
-    - name: Simulate symlink creation for cmctl in check mode
-      ansible.builtin.debug:
-        msg: "Would create symlink '{{ certmanager_vars.bin_directory }}/kubectl-cert_manager' pointing to '{{ certmanager_vars.bin_directory }}/cmctl'."
-      when: 
-        - ansible_check_mode
-        - not cmctl_stat.stat.exists
+    # - name: Simulate symlink creation for cmctl in check mode
+    #   ansible.builtin.debug:
+    #     msg: "Would create symlink '{{ certmanager_vars.bin_directory }}/kubectl-cert_manager' pointing to '{{ certmanager_vars.bin_directory }}/cmctl'."
+    #   when: 
+    #     - ansible_check_mode
+    #     - not cmctl_stat.stat.exists
 
 
-    - name: Add Helm repository
+    - name: Add Jetstack Helm repository
       kubernetes.core.helm_repository:
-        name: "{{ certmanager_vars.kubernetes.helm.repository.org }}"
-        repo_url: "{{ certmanager_vars.kubernetes.helm.repository.url }}"
+        name: jetstack
+        repo_url: '{{ certmanager_vars.kubernetes.helm.repository.url }}'
+        state: present
 
     - name: Chart Setup
       run_once: true
@@ -102,27 +95,32 @@
         - name: Set chart postinstall fact
           ansible.builtin.set_fact:
             certmanager_postinstall: false
+        - name: Print Helm chart repository and chart details
+          ansible.builtin.debug:
+            msg: >
+              Installing Helm chart from repository: "{{ certmanager_vars.kubernetes.helm.repository.url }}"
+              Chart name: "{{ certmanager_vars.kubernetes.helm.chart.name }}"
+              Chart version: "{{ certmanager_vars.kubernetes.helm.chart.version }}"
 
-        - name: Install Helm chart for cert-manager
+        - name: Install chart
           kubernetes.core.helm:
-            chart_ref: "{{ certmanager_map.helm.chart.reference }}"
-            chart_version: "{{ certmanager_vars.kubernetes.helm.chart.version }}"
-            kubeconfig: "{{ k3s_project.cluster.kubeconfig }}"
-            name: "{{ certmanager_vars.kubernetes.helm.chart.name }}"
-            namespace: "{{ certmanager_vars.kubernetes.namespace | default('cert-manager') }}"
-            timeout: "{{ certmanager_map.helm.timeout }}"
+            chart_ref: '{{ certmanager_map.helm.chart.reference }}'
+            chart_version: '{{ certmanager_vars.kubernetes.helm.chart.version }}'
+            kubeconfig: '{{ k3s_project.cluster.kubeconfig }}'
+            name: '{{ certmanager_vars.kubernetes.helm.chart.name }}'
+            namespace: '{{ certmanager_vars.kubernetes.namespace }}'
+            timeout: '{{ certmanager_map.helm.timeout }}'
             values: "{{ lookup('ansible.builtin.template', 'values.j2') | from_yaml }}"
             create_namespace: true
             update_repo_cache: true
             wait: true
-          register: helm_install_result
+          register: result
           delay: 1
           retries: 3
-          until: helm_install_result is succeeded
-
+          until: result is not failed
 
         - name: Create self-signed cluster issuer
           kubernetes.core.k8s:
             definition: "{{ lookup('ansible.builtin.template', 'cluster_issuer.j2') | from_yaml }}"
-            kubeconfig: "{{ k3s_project.cluster.kubeconfig }}"
+            kubeconfig: '{{ k3s_project.cluster.kubeconfig }}'
             wait: true

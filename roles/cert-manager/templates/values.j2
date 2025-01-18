@@ -1,69 +1,76 @@
 global:
   leaderElection:
-    namespace: {{ certmanager_vars.kubernetes.namespace }}
-  logLevel: {{ certmanager_vars.kubernetes.global.log_level }}
+    namespace: {{ certmanager_vars.kubernetes.namespace | default('default-namespace') }}
+  logLevel: {{ certmanager_vars.kubernetes.global.log_level | default('info') }}
+
 cainjector:
   resources:
     limits:
 {% if certmanager_vars.kubernetes.cainjector.resources.limits.cpu is truthy %}
       cpu: {{ certmanager_vars.kubernetes.cainjector.resources.limits.cpu }}
+{% else %}
+      cpu: "100m"
 {% endif %}
-      memory: {{ certmanager_vars.kubernetes.cainjector.resources.limits.memory }}
+      memory: {{ certmanager_vars.kubernetes.cainjector.resources.limits.memory | default('128Mi') }}
     requests:
-      cpu: {{ certmanager_vars.kubernetes.cainjector.resources.requests.cpu }}
-      memory: {{ certmanager_vars.kubernetes.cainjector.resources.requests.memory }}
+      cpu: {{ certmanager_vars.kubernetes.cainjector.resources.requests.cpu | default('10m') }}
+      memory: {{ certmanager_vars.kubernetes.cainjector.resources.requests.memory | default('128Mi') }}
+
 crds:
   enabled: true
   keep: false
+
 extraArgs:
   - --enable-gateway-api
+
 podDisruptionBudget:
   enabled: true
   minAvailable: 1
+
 {% if certmanager_postinstall is truthy and certmanager_map.metrics.service.monitor.enabled is truthy %}
 prometheus:
   servicemonitor:
     enabled: true
-{% if certmanager_map.metrics.service.monitor.scrape.interval is falsy %}
-    interval: {{ victoriametrics_map.service.monitor.scrape.interval }}
-{% else %}
-    interval: {{ certmanager_map.metrics.service.monitor.scrape.interval }}
+    interval: {{ certmanager_map.metrics.service.monitor.scrape.interval | default(victoriametrics_map.service.monitor.scrape.interval | default('30s')) }}
+    namespace: {{ victoriametrics_vars.kubernetes.namespace | default('default-namespace') }}
+    scrapeTimeout: {{ certmanager_map.metrics.service.monitor.scrape.timeout | default(victoriametrics_map.service.monitor.scrape.timeout | default('10s')) }}
 {% endif %}
-    namespace: {{ victoriametrics_vars.kubernetes.namespace }}
-{% if certmanager_map.metrics.service.monitor.scrape.timeout is falsy %}
-    scrapeTimeout: {{ victoriametrics_map.service.monitor.scrape.timeout }}
-{% else %}
-    scrapeTimeout: {{ certmanager_map.metrics.service.monitor.scrape.timeout }}
-{% endif %}
-{% endif %}
+
 resources:
   limits:
 {% if certmanager_vars.kubernetes.controller.resources.limits.cpu is truthy %}
     cpu: {{ certmanager_vars.kubernetes.controller.resources.limits.cpu }}
+{% else %}
+    cpu: "200m"
 {% endif %}
-    memory: {{ certmanager_vars.kubernetes.controller.resources.limits.memory }}
+    memory: {{ certmanager_vars.kubernetes.controller.resources.limits.memory | default('256Mi') }}
   requests:
-    cpu: {{ certmanager_vars.kubernetes.controller.resources.requests.cpu }}
-    memory: {{ certmanager_vars.kubernetes.controller.resources.requests.memory }}
-replicaCount: {{ certmanager_vars.kubernetes.controller.replicas }}
+    cpu: {{ certmanager_vars.kubernetes.controller.resources.requests.cpu | default('100m') }}
+    memory: {{ certmanager_vars.kubernetes.controller.resources.requests.memory | default('128Mi') }}
+
+replicaCount: {{ certmanager_vars.kubernetes.controller.replicas | default(2) }}
+
 strategy:
   rollingUpdate:
     maxSurge: 1
     maxUnavailable: 0
   type: RollingUpdate
+
 webhook:
 {% if certmanager_vars.kubernetes.webhook.replicas > 1 %}
   podDisruptionBudget:
     enabled: true
     minAvailable: 1
 {% endif %}
-  replicaCount: {{ certmanager_vars.kubernetes.webhook.replicas }}
+  replicaCount: {{ certmanager_vars.kubernetes.webhook.replicas | default(1) }}
   resources:
     limits:
 {% if certmanager_vars.kubernetes.webhook.resources.limits.cpu is truthy %}
       cpu: {{ certmanager_vars.kubernetes.webhook.resources.limits.cpu }}
+{% else %}
+      cpu: "50m"
 {% endif %}
-      memory: {{ certmanager_vars.kubernetes.webhook.resources.limits.memory }}
+      memory: {{ certmanager_vars.kubernetes.webhook.resources.limits.memory | default('128Mi') }}
     requests:
-      cpu: {{ certmanager_vars.kubernetes.webhook.resources.requests.cpu }}
-      memory: {{ certmanager_vars.kubernetes.webhook.resources.requests.memory }}
+      cpu: {{ certmanager_vars.kubernetes.webhook.resources.requests.cpu | default('25m') }}
+      memory: {{ certmanager_vars.kubernetes.webhook.resources.requests.memory | default('64Mi') }}
