@@ -16,6 +16,7 @@ cert_manager_values:
   - crds.enabled=true
   - crds.keep=true
   - global.leaderElection.namespace="{{ cert_manager_namespace }}"
+
 certmanager_vars:
   release:
     repository:
@@ -24,19 +25,25 @@ certmanager_vars:
     version: "v2.1.1"
     checksum: "https://github.com/cert-manager/cmctl/releases/download/v2.1.1/checksums.txt"
     file: "cmctl_linux_amd64"
+
   bin_directory: "/usr/local/bin"  # Set this to the correct directory for your environment
+
   kubernetes:
     helm:
       chart:
         name: cert-manager
-        version: v1.16.3
+        # IMPORTANT: Remove the leading 'v' to avoid the '--version=v1.16.3' CLI issue
+        version: 1.16.3  # <-- Was "v1.16.3", now "1.16.3"
       repository:
         name: cert-manager
         org: jetstack
         url: https://charts.jetstack.io
+
     namespace: "cert-manager"
+
     global:
       log_level: "info"
+
     cainjector:
       resources:
         limits:
@@ -45,24 +52,27 @@ certmanager_vars:
         requests:
           cpu: "10m"
           memory: "128Mi"
+
     controller:
-      replicas: 2        # Matches {{ certmanager_vars.kubernetes.controller.replicas }}
+      replicas: 2
       resources:
         limits:
-          cpu: "200m"    # Matches {{ certmanager_vars.kubernetes.controller.resources.limits.cpu }}
+          cpu: "200m"
           memory: "256Mi"
         requests:
-          cpu: "100m"    # Matches {{ certmanager_vars.kubernetes.controller.resources.requests.cpu }}
+          cpu: "100m"
           memory: "128Mi"
+
     webhook:
-      replicas: 1        # Matches {{ certmanager_vars.kubernetes.webhook.replicas }}
+      replicas: 1
       resources:
         limits:
-          cpu: "50m"     # Matches {{ certmanager_vars.kubernetes.webhook.resources.limits.cpu }}
+          cpu: "50m"
           memory: "128Mi"
         requests:
-          cpu: "25m"     # Matches {{ certmanager_vars.kubernetes.webhook.resources.requests.cpu }}
+          cpu: "25m"
           memory: "64Mi"
+
   map:
     metrics:
       service:
@@ -71,6 +81,7 @@ certmanager_vars:
           scrape:
             interval: "30s"
             timeout: "10s"
+
   postinstall: true
 
 victoriametrics_map:
@@ -83,14 +94,3 @@ victoriametrics_map:
 victoriametrics_vars:
   kubernetes:
     namespace: "monitoring"
-
-# certmanager_map:
-#   helm:
-#     chart:
-#       reference: "jetstack/cert-manager"
-#     timeout: 300
-#   ca:
-#     cluster:
-#       issuer:
-#         name: "selfsigned-cluster-issuer"
-
