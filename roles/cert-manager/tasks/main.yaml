@@ -27,7 +27,9 @@
       ansible.builtin.set_fact:
         sha256_checksum: "{{ item.split(' ')[0] }}"
       loop: "{{ checksums.content.split('\n') }}"
-      when: item | regex_search(certmanager_vars.release.file + '$') or item | regex_search('/' + certmanager_vars.release.file + '$')
+      when:
+        - item | regex_search(certmanager_vars.release.file + '$')
+        - item | regex_search('/' + certmanager_vars.release.file + '$')
       run_once: true
 
     - name: Set cmctl download URL
@@ -53,11 +55,6 @@
       delay: 5
       until: download_result is succeeded
       failed_when: download_result.failed and download_result.retries >= 5
-
-    - name: Check if cmctl is already installed
-      ansible.builtin.stat:
-        path: "{{ certmanager_vars.bin_directory }}/cmctl"
-      register: cmctl_stat
 
     - name: Move and rename cmctl binary to bin directory
       ansible.builtin.command:
@@ -91,37 +88,32 @@
     - name: Chart Setup
       run_once: true
       block:
+
         - name: Set chart postinstall fact
           ansible.builtin.set_fact:
             certmanager_postinstall: false
-	
-				- name: Add Jetstack Helm repository
-				  kubernetes.core.helm_repository:
-				    name: cert-manager            # <-- The repo name is "cert-manager"
-				    repo_url: "https://charts.jetstack.io"
-				    state: present
-				
-				- name: Install cert-manager
-				  kubernetes.core.helm:
-				    release_name: cert-manager
-				    release_namespace: cert-manager
-				    name: cert-manager
-				    namespace: cert-manager
-				    create_namespace: true
-				
-				    # Must match the repository name above: "cert-manager"
-				    # Then slash chart name: "cert-manager"
-				    chart_ref: "cert-manager/cert-manager"
-				
-				    # Remove any leading 'v'
-				    chart_version: "1.16.3"
-				
-				    update_repo_cache: true
-				    wait: true
-				    values:
-				      prometheus:
-				        enabled: false
-				      installCRDs: true
+
+        - name: Add Jetstack Helm repository
+          kubernetes.core.helm_repository:
+            name: cert-manager
+            repo_url: "https://charts.jetstack.io"
+            state: present
+
+        - name: Install cert-manager
+          kubernetes.core.helm:
+            release_name: cert-manager
+            release_namespace: cert-manager
+            name: cert-manager
+            namespace: cert-manager
+            create_namespace: true
+            chart_ref: "cert-manager/cert-manager"
+            chart_version: "1.16.3"
+            update_repo_cache: true
+            wait: true
+            values:
+              prometheus:
+                enabled: false
+              installCRDs: true
 
         - name: Create self-signed cluster issuer
           kubernetes.core.k8s:
