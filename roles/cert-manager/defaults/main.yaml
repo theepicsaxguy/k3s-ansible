@@ -45,3 +45,4 @@ certmanager_vars:
       name: cmctl
       org: cert-manager
     version: v2.1.1
+  bin_directory: /usr/local/bin
