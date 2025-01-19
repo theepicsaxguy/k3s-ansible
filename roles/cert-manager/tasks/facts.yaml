@@ -23,8 +23,8 @@
   ansible.builtin.set_fact:
     certmanager_project:
       release:
-        checksum: "{{ certmanager_map.release.url }}/{{ certmanager_vars.release.checksum | basename }}"
-        file: "cmctl_{{ cli_arch | default('unknown') }}_{{ cli_arch | default('unknown') }}"
+        checksum: "{{ certmanager_map.release.url }}/checksums.txt"
+        file: "cmctl_{{ cli_os | default('linux') }}_{{ cli_arch | default('amd64') }}"
         url: "{{ certmanager_map.release.url }}"
       tag: "{{ certmanager_vars.kubernetes.helm.chart.version }}"
 
