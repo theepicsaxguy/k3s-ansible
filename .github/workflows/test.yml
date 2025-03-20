@@ -65,7 +65,7 @@ jobs:
           cache: 'pip' # caching pip dependencies
 
       - name: Restore vagrant Boxes cache
-        uses: actions/cache/restore@6849a6489940f00c2f30c0fb92c6274307ccb58a # 4.1.2
+        uses: actions/cache/restore@5a3ec84eff668545956fd18022155c47e93e2684 # 4.2.3
         with:
           path: ~/.vagrant.d/boxes
           key: vagrant-boxes-${{ hashFiles('**/molecule.yml') }}
